@@ -1,0 +1,10 @@
+2026-10-28T10:00:00.8442255Z Run python -m pytest -q
+2026-10-28T10:00:01.5276454Z ==================================== ERRORS ====================================
+2026-10-28T10:00:02.1977242Z ___________________ ERROR collecting tests/test_cart.py ___________________
+2026-10-28T10:00:03.1873497Z ImportError while importing test module '/home/runner/work/tinyshop/tests/test_cart.py'.
+2026-10-28T10:00:04.6294975Z tests/test_cart.py:1: in <module>
+2026-10-28T10:00:05.3682708Z     from tinyshop.cart import add_item
+2026-10-28T10:00:06.3220781Z E   ImportError: cannot import name 'add_item' from 'tinyshop.cart' (/home/runner/work/tinyshop/tinyshop/cart.py)
+2026-10-28T10:00:07.2732952Z =========================== short test summary info ============================
+2026-10-28T10:00:08.2887734Z ERROR tests/test_cart.py
+2026-10-28T10:00:09.8302996Z ##[error]Process completed with exit code 2.

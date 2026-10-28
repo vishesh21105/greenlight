@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% set page = 'metrics' %}
+{% block title %}Metrics · GreenLight{% endblock %}
+{% block content %}
+<h1>How GreenLight is doing</h1>
+<p class="lede">Counted from every incident GreenLight has handled, including the ones it did not fix. A fix only counts when GreenLight's sandbox ran the tests and they passed.</p>
+
+<div class="figures">
+  <div class="figure"><div class="value">{{ m.fixed }} / {{ m.fixable }}</div><div class="label">fixable builds fixed{% if m.fix_rate is not none %} ({{ '%.0f'|format(m.fix_rate * 100) }}%){% endif %}</div></div>
+  <div class="figure"><div class="value">{{ m.median_minutes_to_fix | minutes }}</div><div class="label">median time, red build to fix PR</div></div>
+  <div class="figure"><div class="value">{{ '$%.3f'|format(m.cost_per_fix_usd) if m.cost_per_fix_usd is not none else '—' }}</div><div class="label">AI cost per fix, failures included</div></div>
+  <div class="figure"><div class="value">{{ '%.1f'|format(m.avg_log_kept * 100) ~ '%' if m.avg_log_kept is not none else '—' }}</div><div class="label">of each CI log sent to the AI, on average</div></div>
+</div>
+
+<h2>Broken builds per day</h2>
+<div class="chart-box"><canvas id="perDay" aria-label="Broken builds and fixes per day"></canvas></div>
+
+<div class="split">
+  <section>
+    <h2>By outcome</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Outcome</th><th class="num">Incidents</th></tr></thead>
+      <tbody>{% for state, n in m.by_state | dictsort(by='value', reverse=true) %}<tr><td><span class="pill s-{{ state }}">{{ STATE_LABELS.get(state, state) }}</span></td><td class="num">{{ n }}</td></tr>{% else %}<tr><td colspan="2" class="muted">No incidents yet</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </section>
+  <section>
+    <h2>By kind of failure</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Kind</th><th class="num">Incidents</th></tr></thead>
+      <tbody>{% for cat, n in m.by_category | dictsort(by='value', reverse=true) %}<tr><td>{{ cat.replace('_', ' ') }}</td><td class="num">{{ n }}</td></tr>{% else %}<tr><td colspan="2" class="muted">No incidents yet</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/chart.umd.js"></script>
+<script>
+  (function () {
+    if (!window.Chart) return;
+    const css = getComputedStyle(document.documentElement);
+    const v = (name) => css.getPropertyValue(name).trim();
+    const series = {{ m.series | tojson }};
+    new Chart(document.getElementById("perDay"), {
+      type: "bar",
+      data: {
+        labels: series.labels,
+        datasets: [
+          { label: "Broken builds", data: series.incidents, backgroundColor: v("--line") },
+          { label: "Fixed with a verified PR", data: series.fixed, backgroundColor: v("--green") },
+        ],
+      },
+      options: {
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: v("--muted") } } },
+        scales: {
+          x: { ticks: { color: v("--muted"), maxRotation: 0, autoSkip: true }, grid: { display: false } },
+          y: { beginAtZero: true, ticks: { color: v("--muted"), precision: 0 }, grid: { color: v("--line") } },
+        },
+      },
+    });
+  })();
+</script>
+{% endblock %}

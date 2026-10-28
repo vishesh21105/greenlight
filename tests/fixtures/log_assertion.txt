@@ -1,0 +1,10 @@
+2026-10-28T10:00:00.5895071Z Run python -m pytest -q
+2026-10-28T10:00:01.2486182Z _________________________ test_discount _________________________
+2026-10-28T10:00:02.9628264Z     def test_discount():
+2026-10-28T10:00:03.6015299Z >       assert apply_discount(1000) == 900
+2026-10-28T10:00:04.4503672Z E       assert 850 == 900
+2026-10-28T10:00:05.8775446Z E        +  where 850 = apply_discount(1000)
+2026-10-28T10:00:06.1367452Z tests/test_pricing.py:9: AssertionError
+2026-10-28T10:00:07.5870355Z =========================== short test summary info ============================
+2026-10-28T10:00:08.2728709Z FAILED tests/test_pricing.py::test_discount - assert 850 == 900
+2026-10-28T10:00:09.7251733Z ##[error]Process completed with exit code 1.

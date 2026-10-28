@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% set page = 'incidents' %}
+{% block title %}{{ inc.repository }} {{ inc.failing_sha[:8] }} · GreenLight{% endblock %}
+{% block content %}
+{% set stations = [('received','Build failed'),('log_trimmed','Log trimmed'),('classified','Classified'),('reproducing','Reproduced'),('investigating','Investigated'),('verifying','Verified'),('fixed','Fix PR opened')] %}
+{% set order = {'received':0,'log_trimmed':1,'classified':2,'reproducing':3,'investigating':4,'verifying':5,'fixed':6} %}
+{% set ns = namespace(reached=0) %}
+{% for e in events if e.type == 'state' and e.payload.state in order %}
+  {% if order[e.payload.state] > ns.reached %}{% set ns.reached = order[e.payload.state] %}{% endif %}
+{% endfor %}
+{% set is_fixed = inc.state == 'fixed' %}
+
+<p class="muted" style="margin:0">{{ inc.repository }} · {{ inc.branch or 'unknown branch' }} · commit <span class="mono">{{ inc.failing_sha[:8] }}</span></p>
+<h1>
+  {% if is_fixed %}Fixed: a verified pull request is waiting for review
+  {% elif inc.state == 'gave_up' %}Diagnosed, but no safe fix was found
+  {% elif inc.state == 'not_reproduced' %}The failure did not happen again in the sandbox
+  {% elif inc.state == 'flaky' %}A flaky test, not a code problem
+  {% elif inc.state == 'infra' %}A runner or network problem, not a code problem
+  {% elif inc.state == 'budget_exhausted' %}Stopped at its budget
+  {% elif inc.state == 'diagnosed_no_fix' %}Diagnosed without an AI fix
+  {% elif inc.state == 'error' %}GreenLight hit an internal error
+  {% else %}Working on this broken build{% endif %}
+</h1>
+
+<div class="track" aria-label="Progress of this incident">
+  <div class="fill {% if inc.final and not is_fixed %}{{ 'failed' if inc.state in ['error','budget_exhausted'] else 'stopped' }}{% endif %}"
+       style="width: calc((100% - 100% / 7) * {{ ns.reached }} / 6)"></div>
+  {% for key, label in stations %}
+    {% set idx = loop.index0 %}
+    <div class="station {% if is_fixed and idx == 6 %}final-good{% elif idx < ns.reached or (idx == ns.reached and inc.final) %}done{% elif idx == ns.reached %}current {{ '' if inc.final else 'live' }}{% endif %}">
+      <div class="dot" aria-hidden="true"></div>
+      <div class="name">{{ label }}</div>
+    </div>
+  {% endfor %}
+</div>
+
+{% if inc.final %}
+  <div class="exit-note {{ 'good' if is_fixed else ('bad' if inc.state in ['error','budget_exhausted'] else '') }}">
+    <strong>{{ STATE_LABELS.get(inc.state, inc.state) }}.</strong>
+    {% if inc.pr_url %} Draft pull request: <a href="{{ inc.pr_url if inc.pr_url.startswith('http') else '#patch' }}">{{ inc.pr_url }}</a>.{% endif %}
+    {% if inc.summary and not is_fixed %} {{ inc.summary[:600] }}{% endif %}
+  </div>
+{% endif %}
+
+<div class="split">
+  <section>
+    <h2>Timeline</h2>
+    <ol class="timeline" id="timeline">
+      {% for e in events %}
+        <li class="t-{{ e.type }}">
+          <span class="time">{{ e.created_at[11:19] if e.created_at else '' }}</span>
+          {% if e.type == 'tool_call' %}Agent used <span class="tool">{{ e.message }}</span>{% if e.payload.arguments %} <span class="muted mono">{% for k, v in e.payload.arguments.items() %}{{ k }}={{ v }}{{ ', ' if not loop.last }}{% endfor %}</span>{% endif %}
+          {% else %}{{ e.message }}{% endif %}
+          {% if e.payload.output %}<details><summary>Show output</summary><pre class="block">{{ e.payload.output }}</pre></details>{% endif %}
+        </li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  <aside>
+    <h2>Facts</h2>
+    <dl class="facts">
+      <dt>Status</dt><dd><span class="pill s-{{ inc.state }}">{{ STATE_LABELS.get(inc.state, inc.state) }}</span></dd>
+      <dt>Kind</dt><dd>{{ (inc.category or 'not classified yet').replace('_', ' ') }}{% if inc.confidence is not none %} ({{ '%.0f'|format(inc.confidence * 100) }}% sure){% endif %}</dd>
+      <dt>Failing tests</dt><dd>{% for t in inc.failing_tests %}<span class="mono">{{ t }}</span><br>{% else %}none listed{% endfor %}</dd>
+      <dt>Log</dt><dd>{% if inc.raw_log_lines %}{{ inc.raw_log_lines }} lines, trimmed to {{ inc.trimmed_log_lines }}{% else %}—{% endif %}</dd>
+      <dt>Last green</dt><dd class="mono">{{ (inc.last_green_sha or 'unknown')[:8] }}</dd>
+      <dt>Took</dt><dd>{{ inc.duration_seconds | duration }}</dd>
+      <dt>AI usage</dt><dd>{{ usage.calls }} calls, {{ usage.input_tokens + usage.output_tokens }} tokens, ${{ '%.3f'|format(inc.total_cost_usd) }}</dd>
+    </dl>
+
+    {% if trimmed_log %}
+      <h2>Trimmed CI log</h2>
+      <pre class="block">{{ trimmed_log }}</pre>
+    {% endif %}
+  </aside>
+</div>
+
+{% if patches %}
+  <h2 id="patch">Proposed {{ 'fix' if patches|length == 1 else 'fixes' }}</h2>
+  {% for p in patches %}
+    <div class="patch">
+      <p><strong>{{ 'Verified' if p.verified else 'Did not pass verification' }}</strong> · {{ p.files_changed }} file{{ '' if p.files_changed == 1 else 's' }}, {{ p.lines_changed }} lines{% if p.touches_tests %} · changes a test file{% endif %}</p>
+      <p>{{ p.rationale }}</p>
+      <pre class="block diff">{% for cls, line in p.diff | diff_lines %}<span class="{{ cls }}">{{ line }}</span>{% endfor %}</pre>
+    </div>
+  {% endfor %}
+{% endif %}
+
+{% if runs %}
+  <h2>Sandbox runs</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Purpose</th><th>Result</th><th class="num">Time</th><th>Command</th></tr></thead>
+      <tbody>
+        {% for r in runs %}
+          <tr>
+            <td>{{ r.purpose.replace('_', ' ') }}</td>
+            <td>{% if r.timed_out %}timed out{% elif r.exit_code == 0 %}passed{% else %}failed (exit {{ r.exit_code }}){% endif %}</td>
+            <td class="num">{{ '%.1f'|format(r.duration_ms / 1000) }}s</td>
+            <td class="mono muted">{{ (r.command[-6:] | join(' '))[:90] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if not inc.final %}
+<script>
+  // Live updates: ask for new timeline events every 2 seconds.
+  (function () {
+    const list = document.getElementById("timeline");
+    let last = {{ events[-1].seq_no if events else 0 }};
+    function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+    async function poll() {
+      try {
+        const r = await fetch("/api/v1/incidents/{{ inc.id }}/events?after=" + last);
+        const data = await r.json();
+        for (const e of data.events) {
+          last = e.seq_no;
+          if (e.type === "state") { location.reload(); return; }
+          const li = document.createElement("li");
+          li.className = "t-" + e.type;
+          const time = (e.created_at || "").slice(11, 19);
+          let html = '<span class="time">' + time + "</span>";
+          html += e.type === "tool_call"
+            ? 'Agent used <span class="tool">' + esc(e.message) + "</span>"
+            : esc(e.message);
+          if (e.payload && e.payload.output) {
+            html += "<details><summary>Show output</summary><pre class=\"block\">" + esc(e.payload.output) + "</pre></details>";
+          }
+          li.innerHTML = html;
+          list.appendChild(li);
+        }
+        if (data.final) { location.reload(); return; }
+      } catch (err) { /* try again on the next tick */ }
+      setTimeout(poll, 2000);
+    }
+    setTimeout(poll, 2000);
+  })();
+</script>
+{% endif %}
+{% endblock %}

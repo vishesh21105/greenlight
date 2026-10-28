@@ -1,0 +1,10 @@
+# GreenLight house rules for this repository.
+mode: pull_request
+test_command: ["python", "-m", "pytest", "-q"]
+install_command: ["pip", "install", "-r", "requirements.txt"]
+allowed_paths: ["tinyshop/**", "tests/**", "requirements.txt"]
+blocked_paths: []
+max_files_changed: 3
+max_lines_changed: 40
+allow_test_edits: flag
+cost_limit_usd_per_day: 5

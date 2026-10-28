@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% set page = 'incidents' %}
+{% block title %}Incidents · GreenLight{% endblock %}
+{% block content %}
+{% if not incidents %}
+  <h1>Broken builds</h1>
+  <div class="empty">
+    <p>No broken builds yet. When a workflow run fails in a repository where GreenLight is installed, it shows up here within seconds.</p>
+    <p>To try it without GitHub, run <code>python -m app.demo</code> and refresh this page.</p>
+  </div>
+{% else %}
+  <p class="headline">
+    {% if metrics.fixable %}
+      <strong>{{ metrics.fixed }} of {{ metrics.fixable }}</strong> fixable broken builds got a verified fix{% if metrics.median_minutes_to_fix is not none %}, in a median of <strong>{{ metrics.median_minutes_to_fix | minutes }}</strong> from red build to pull request{% endif %}.
+    {% else %}
+      <strong>{{ metrics.incidents }}</strong> broken build{{ '' if metrics.incidents == 1 else 's' }} so far, none needing a code fix yet.
+    {% endif %}
+  </p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Repository and branch</th>
+          <th>Kind of failure</th>
+          <th>Commit</th>
+          <th>Started (UTC)</th>
+          <th class="num">Took</th>
+          <th class="num">AI cost</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for i in incidents %}
+        <tr>
+          <td><span class="pill s-{{ i.state }}">{{ STATE_LABELS.get(i.state, i.state) }}</span></td>
+          <td><a class="row-link" href="/incidents/{{ i.id }}">{{ i.repository }}</a><br><span class="muted">{{ i.branch or '—' }}</span></td>
+          <td>{{ (i.category or '—').replace('_', ' ') }}</td>
+          <td class="mono">{{ i.failing_sha[:8] }}</td>
+          <td>{{ i.started_at[:16].replace('T', ' ') if i.started_at else '—' }}</td>
+          <td class="num">{{ i.duration_seconds | duration }}</td>
+          <td class="num">${{ '%.3f'|format(i.total_cost_usd) }}</td>
+          <td>{% if i.pr_url %}<a href="{{ i.pr_url if i.pr_url.startswith('http') else '/incidents/' ~ i.id }}">Pull request</a>{% elif i.final %}<a href="/incidents/{{ i.id }}">Diagnosis</a>{% else %}<span class="muted">Working</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{% if incidents and incidents|selectattr('final', 'equalto', false)|list %}
+<script>
+  // Something is still running: refresh the list every 5 seconds.
+  setTimeout(() => location.reload(), 5000);
+</script>
+{% endif %}
+{% endblock %}

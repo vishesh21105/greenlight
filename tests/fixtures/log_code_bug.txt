@@ -1,0 +1,548 @@
+2026-10-28T10:00:00.4355010Z ##[group]Run actions/setup-python@v5
+2026-10-28T10:00:01.7213473Z Successfully set up CPython (3.12.7)
+2026-10-28T10:00:02.7530338Z ##[endgroup]
+2026-10-28T10:00:03.9742232Z ##[group]Run pip install -r requirements.txt
+2026-10-28T10:00:04.6439515Z Collecting certifi==1.0.0
+2026-10-28T10:00:05.2633766Z Collecting charset-normalizer==1.1.0
+2026-10-28T10:00:06.7870318Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:00:07.6794502Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:00:08.3120082Z Collecting idna==1.4.0
+2026-10-28T10:00:09.2088218Z Collecting iniconfig==1.5.0
+2026-10-28T10:00:10.1731060Z Requirement already satisfied: pluggy in /opt/hostedtoolcache/Python
+2026-10-28T10:00:11.6041488Z Requirement already satisfied: requests in /opt/hostedtoolcache/Python
+2026-10-28T10:00:12.9953694Z   Downloading charset-normalizer-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:13.6262176Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:14.8005967Z Collecting requests==1.1.0
+2026-10-28T10:00:15.6004995Z Collecting requests==1.2.0
+2026-10-28T10:00:16.6348564Z   Downloading pluggy-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:17.6915917Z Collecting pluggy==1.4.0
+2026-10-28T10:00:18.5574633Z   Downloading packaging-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:19.6457438Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:00:20.9725873Z   Downloading packaging-1.7.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:21.9406339Z   Downloading pytest-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:22.1144474Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:00:23.9826969Z Collecting charset-normalizer==1.1.0
+2026-10-28T10:00:24.3044538Z Collecting pluggy==1.2.0
+2026-10-28T10:00:25.3495719Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:26.6320235Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:27.6462207Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:00:28.6495619Z   Downloading packaging-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:29.2155046Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:30.8580177Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:00:31.5691115Z Requirement already satisfied: requests in /opt/hostedtoolcache/Python
+2026-10-28T10:00:32.9047994Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:00:33.8619240Z   Downloading pluggy-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:34.7109681Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:35.7384195Z Requirement already satisfied: urllib3 in /opt/hostedtoolcache/Python
+2026-10-28T10:00:36.2311481Z Collecting packaging==1.5.0
+2026-10-28T10:00:37.1941211Z Requirement already satisfied: certifi in /opt/hostedtoolcache/Python
+2026-10-28T10:00:38.3257898Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:00:39.1817488Z Requirement already satisfied: requests in /opt/hostedtoolcache/Python
+2026-10-28T10:00:40.9786424Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:41.9257284Z   Downloading pluggy-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:42.5226491Z   Downloading certifi-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:43.5116540Z   Downloading requests-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:44.6681585Z   Downloading packaging-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:45.7066268Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:46.7209831Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:00:47.7754081Z Collecting charset-normalizer==1.7.0
+2026-10-28T10:00:48.6157119Z   Downloading pluggy-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:49.8794217Z   Downloading packaging-1.0.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:50.6711831Z Collecting pluggy==1.1.0
+2026-10-28T10:00:51.9927633Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:52.9515143Z   Downloading packaging-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:53.3815175Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:00:54.1487752Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:55.3488983Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:56.5196409Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:00:57.4709980Z Collecting iniconfig==1.8.0
+2026-10-28T10:00:58.3238207Z   Downloading idna-1.0.0-py3-none-any.whl (64 kB)
+2026-10-28T10:00:59.2891822Z   Downloading packaging-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:00.4097079Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:01.7897261Z Collecting requests==1.3.0
+2026-10-28T10:01:02.1840622Z Collecting urllib3==1.4.0
+2026-10-28T10:01:03.2664675Z Collecting iniconfig==1.5.0
+2026-10-28T10:01:04.5458196Z   Downloading charset-normalizer-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:05.2794115Z Collecting charset-normalizer==1.7.0
+2026-10-28T10:01:06.4428335Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:07.5390556Z Collecting charset-normalizer==1.0.0
+2026-10-28T10:01:08.2120268Z   Downloading certifi-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:09.9831147Z   Downloading charset-normalizer-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:10.2316957Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:11.2221573Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:12.4647043Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:01:13.3908619Z Collecting urllib3==1.6.0
+2026-10-28T10:01:14.9581147Z Requirement already satisfied: charset-normalizer in /opt/hostedtoolcache/Python
+2026-10-28T10:01:15.8249264Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:01:16.1366571Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:17.7175773Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:18.9165017Z   Downloading packaging-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:19.5760575Z Collecting pluggy==1.3.0
+2026-10-28T10:01:20.4689894Z Collecting idna==1.4.0
+2026-10-28T10:01:21.4361910Z   Downloading pluggy-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:22.9281491Z   Downloading requests-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:23.4946365Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:01:24.8137767Z   Downloading packaging-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:25.8586550Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:01:26.7159926Z Collecting idna==1.1.0
+2026-10-28T10:01:27.4167965Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:28.9089272Z Collecting pluggy==1.3.0
+2026-10-28T10:01:29.2219587Z   Downloading charset-normalizer-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:30.5304382Z Collecting idna==1.5.0
+2026-10-28T10:01:31.7833534Z Collecting charset-normalizer==1.6.0
+2026-10-28T10:01:32.4378321Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:33.1138912Z   Downloading charset-normalizer-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:34.9925282Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:35.7387363Z Collecting certifi==1.1.0
+2026-10-28T10:01:36.9628250Z Collecting packaging==1.2.0
+2026-10-28T10:01:37.9171776Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:01:38.2281996Z Collecting certifi==1.4.0
+2026-10-28T10:01:39.7773684Z   Downloading pluggy-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:40.9557527Z Collecting pytest==1.6.0
+2026-10-28T10:01:41.8140334Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:01:42.1673086Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:01:43.6902665Z Requirement already satisfied: urllib3 in /opt/hostedtoolcache/Python
+2026-10-28T10:01:44.8691576Z Requirement already satisfied: charset-normalizer in /opt/hostedtoolcache/Python
+2026-10-28T10:01:45.1107395Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:46.4183653Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:47.6022331Z   Downloading requests-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:48.1092393Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:49.3014014Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:50.6077685Z   Downloading pluggy-1.7.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:51.9598188Z Collecting charset-normalizer==1.8.0
+2026-10-28T10:01:52.6294084Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:01:53.5739678Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:01:54.9818561Z   Downloading packaging-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:55.7902761Z Collecting urllib3==1.3.0
+2026-10-28T10:01:56.9688327Z   Downloading urllib3-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:57.7850150Z   Downloading certifi-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:58.6163346Z   Downloading packaging-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:01:59.8592063Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:00.6065215Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:01.3196870Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:02.9494595Z Collecting pytest==1.1.0
+2026-10-28T10:02:03.8452159Z   Downloading charset-normalizer-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:04.3354293Z   Downloading iniconfig-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:05.3734203Z Collecting packaging==1.4.0
+2026-10-28T10:02:06.5240336Z Collecting pytest==1.5.0
+2026-10-28T10:02:07.1161158Z Collecting pluggy==1.6.0
+2026-10-28T10:02:08.8116525Z   Downloading pluggy-1.7.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:09.1608170Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:10.7180108Z Requirement already satisfied: urllib3 in /opt/hostedtoolcache/Python
+2026-10-28T10:02:11.8060994Z   Downloading urllib3-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:12.7746770Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:13.5723708Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:14.1307538Z Collecting packaging==1.4.0
+2026-10-28T10:02:15.2517949Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:16.2510475Z Collecting urllib3==1.6.0
+2026-10-28T10:02:17.1080838Z Collecting charset-normalizer==1.7.0
+2026-10-28T10:02:18.7432656Z Collecting requests==1.8.0
+2026-10-28T10:02:19.5510977Z Collecting pluggy==1.0.0
+2026-10-28T10:02:20.8790745Z   Downloading requests-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:21.5562691Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:02:22.7251744Z Collecting certifi==1.3.0
+2026-10-28T10:02:23.9076893Z   Downloading iniconfig-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:24.6646226Z   Downloading idna-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:25.7517257Z Requirement already satisfied: urllib3 in /opt/hostedtoolcache/Python
+2026-10-28T10:02:26.8652898Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:27.2954704Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:28.9115544Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:29.6947468Z   Downloading urllib3-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:30.3427583Z Collecting pytest==1.2.0
+2026-10-28T10:02:31.7965806Z Collecting requests==1.3.0
+2026-10-28T10:02:32.3487395Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:33.1304734Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:02:34.3886922Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:02:35.5365986Z Collecting urllib3==1.7.0
+2026-10-28T10:02:36.7170088Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:02:37.3132697Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:38.5817492Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:02:39.7927500Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:40.5327189Z   Downloading certifi-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:41.9619937Z   Downloading charset-normalizer-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:42.5819707Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:43.8059077Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:44.5591506Z Requirement already satisfied: urllib3 in /opt/hostedtoolcache/Python
+2026-10-28T10:02:45.8272968Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:46.6635524Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:02:47.9150272Z Collecting charset-normalizer==1.1.0
+2026-10-28T10:02:48.4614890Z   Downloading pytest-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:49.9243930Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:50.7742840Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:51.8132373Z Collecting urllib3==1.5.0
+2026-10-28T10:02:52.2533055Z   Downloading idna-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:53.2081143Z   Downloading requests-1.7.0-py3-none-any.whl (64 kB)
+2026-10-28T10:02:54.3172148Z Collecting pluggy==1.8.0
+2026-10-28T10:02:55.4458448Z Collecting charset-normalizer==1.0.0
+2026-10-28T10:02:56.3509927Z Collecting urllib3==1.1.0
+2026-10-28T10:02:57.4845813Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:02:58.1438490Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:02:59.2732499Z   Downloading iniconfig-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:00.5248389Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:01.3612427Z   Downloading urllib3-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:02.9049491Z   Downloading certifi-1.7.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:03.2660145Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:04.7696288Z Collecting charset-normalizer==1.0.0
+2026-10-28T10:03:05.4144637Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:06.1050264Z   Downloading certifi-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:07.2495890Z Collecting certifi==1.3.0
+2026-10-28T10:03:08.8175380Z   Downloading pytest-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:09.1853497Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:10.4662083Z   Downloading pluggy-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:11.9967190Z   Downloading requests-1.7.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:12.8077958Z Collecting charset-normalizer==1.8.0
+2026-10-28T10:03:13.6816703Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:03:14.1789112Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:15.2730902Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:03:16.8040210Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:03:17.2990560Z Requirement already satisfied: requests in /opt/hostedtoolcache/Python
+2026-10-28T10:03:18.5451570Z   Downloading pytest-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:19.5676705Z Requirement already satisfied: charset-normalizer in /opt/hostedtoolcache/Python
+2026-10-28T10:03:20.4003821Z Requirement already satisfied: requests in /opt/hostedtoolcache/Python
+2026-10-28T10:03:21.9048247Z Collecting requests==1.8.0
+2026-10-28T10:03:22.1799855Z   Downloading pytest-1.0.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:23.4594012Z   Downloading certifi-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:24.2462851Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:25.7538367Z Requirement already satisfied: pluggy in /opt/hostedtoolcache/Python
+2026-10-28T10:03:26.3076823Z Collecting certifi==1.4.0
+2026-10-28T10:03:27.8504329Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:03:28.5936658Z   Downloading requests-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:29.9519778Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:30.9354405Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:03:31.7594833Z   Downloading idna-1.0.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:32.2948791Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:03:33.9039487Z   Downloading iniconfig-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:34.2775527Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:35.3502045Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:36.7482119Z Collecting idna==1.5.0
+2026-10-28T10:03:37.4375576Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:38.3803865Z   Downloading certifi-1.7.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:39.9736611Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:40.5321970Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:03:41.7989455Z Requirement already satisfied: certifi in /opt/hostedtoolcache/Python
+2026-10-28T10:03:42.5841779Z Collecting urllib3==1.2.0
+2026-10-28T10:03:43.9262385Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:03:44.4600808Z   Downloading certifi-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:45.6655419Z Requirement already satisfied: charset-normalizer in /opt/hostedtoolcache/Python
+2026-10-28T10:03:46.9153297Z Collecting idna==1.6.0
+2026-10-28T10:03:47.2725694Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:03:48.1143644Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:03:49.6819657Z   Downloading packaging-1.0.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:50.5488470Z Collecting packaging==1.1.0
+2026-10-28T10:03:51.1946885Z Collecting packaging==1.2.0
+2026-10-28T10:03:52.8386190Z Collecting charset-normalizer==1.3.0
+2026-10-28T10:03:53.6030886Z Collecting charset-normalizer==1.4.0
+2026-10-28T10:03:54.2690449Z Collecting certifi==1.5.0
+2026-10-28T10:03:55.4834603Z   Downloading iniconfig-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:56.9523057Z Requirement already satisfied: pluggy in /opt/hostedtoolcache/Python
+2026-10-28T10:03:57.5606430Z   Downloading pluggy-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:03:58.5535513Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:03:59.5133056Z Requirement already satisfied: certifi in /opt/hostedtoolcache/Python
+2026-10-28T10:04:00.7906224Z Collecting idna==1.2.0
+2026-10-28T10:04:01.3488679Z Requirement already satisfied: pluggy in /opt/hostedtoolcache/Python
+2026-10-28T10:04:02.3184419Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:03.5300271Z   Downloading charset-normalizer-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:04.4276767Z Collecting pluggy==1.6.0
+2026-10-28T10:04:05.7840370Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:04:06.1980291Z Collecting requests==1.8.0
+2026-10-28T10:04:07.9938564Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:08.9545737Z   Downloading idna-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:09.3497368Z   Downloading charset-normalizer-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:10.7942444Z   Downloading packaging-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:11.5532569Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:12.5694118Z Requirement already satisfied: charset-normalizer in /opt/hostedtoolcache/Python
+2026-10-28T10:04:13.9055529Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:14.6130423Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:04:15.5480477Z   Downloading urllib3-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:16.9243090Z   Downloading pluggy-1.0.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:17.4597040Z Collecting charset-normalizer==1.1.0
+2026-10-28T10:04:18.9367773Z Collecting requests==1.2.0
+2026-10-28T10:04:19.7168720Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:20.8894503Z Collecting certifi==1.4.0
+2026-10-28T10:04:21.5054424Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:22.6677325Z Requirement already satisfied: charset-normalizer in /opt/hostedtoolcache/Python
+2026-10-28T10:04:23.3955454Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:24.4040093Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:25.8568430Z Collecting requests==1.0.0
+2026-10-28T10:04:26.9971838Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:04:27.3507011Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:28.1975801Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:04:29.9454818Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:04:30.6469483Z Requirement already satisfied: urllib3 in /opt/hostedtoolcache/Python
+2026-10-28T10:04:31.9866448Z   Downloading pluggy-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:32.3266054Z Collecting packaging==1.7.0
+2026-10-28T10:04:33.4576580Z   Downloading charset-normalizer-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:34.6290969Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:04:35.9283426Z   Downloading charset-normalizer-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:36.9059891Z   Downloading iniconfig-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:37.6537179Z Collecting pytest==1.3.0
+2026-10-28T10:04:38.2986541Z Requirement already satisfied: pluggy in /opt/hostedtoolcache/Python
+2026-10-28T10:04:39.3146179Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:40.3350774Z Requirement already satisfied: urllib3 in /opt/hostedtoolcache/Python
+2026-10-28T10:04:41.5302843Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:42.4775340Z Requirement already satisfied: requests in /opt/hostedtoolcache/Python
+2026-10-28T10:04:43.2476877Z Requirement already satisfied: certifi in /opt/hostedtoolcache/Python
+2026-10-28T10:04:44.1839381Z   Downloading charset-normalizer-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:45.3887084Z Collecting urllib3==1.2.0
+2026-10-28T10:04:46.2948463Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:47.4795811Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:48.4345449Z Requirement already satisfied: certifi in /opt/hostedtoolcache/Python
+2026-10-28T10:04:49.9439221Z Requirement already satisfied: charset-normalizer in /opt/hostedtoolcache/Python
+2026-10-28T10:04:50.6165086Z Requirement already satisfied: certifi in /opt/hostedtoolcache/Python
+2026-10-28T10:04:51.8084423Z Collecting packaging==1.8.0
+2026-10-28T10:04:52.6496903Z Collecting charset-normalizer==1.0.0
+2026-10-28T10:04:53.1071079Z Collecting pluggy==1.1.0
+2026-10-28T10:04:54.1336410Z Collecting pytest==1.2.0
+2026-10-28T10:04:55.6122161Z Collecting iniconfig==1.3.0
+2026-10-28T10:04:56.4695458Z   Downloading certifi-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:04:57.2418772Z Requirement already satisfied: urllib3 in /opt/hostedtoolcache/Python
+2026-10-28T10:04:58.4766658Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:04:59.5700515Z   Downloading idna-1.7.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:00.6722252Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:01.5514317Z Collecting charset-normalizer==1.0.0
+2026-10-28T10:05:02.9697809Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:03.7363204Z Collecting iniconfig==1.2.0
+2026-10-28T10:05:04.1387969Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:05.3041055Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:06.6533703Z   Downloading pytest-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:07.6822083Z Requirement already satisfied: pluggy in /opt/hostedtoolcache/Python
+2026-10-28T10:05:08.3339434Z Requirement already satisfied: certifi in /opt/hostedtoolcache/Python
+2026-10-28T10:05:09.2902546Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:10.5208089Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:11.3403823Z Collecting idna==1.1.0
+2026-10-28T10:05:12.1688250Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:13.6821722Z   Downloading pluggy-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:14.2298139Z   Downloading charset-normalizer-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:15.2540485Z   Downloading urllib3-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:16.2731571Z   Downloading iniconfig-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:17.6032932Z Requirement already satisfied: charset-normalizer in /opt/hostedtoolcache/Python
+2026-10-28T10:05:18.6318712Z   Downloading packaging-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:19.5176725Z   Downloading certifi-1.0.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:20.5518735Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:21.9885666Z Requirement already satisfied: charset-normalizer in /opt/hostedtoolcache/Python
+2026-10-28T10:05:22.1834943Z Collecting idna==1.3.0
+2026-10-28T10:05:23.7069272Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:24.1522945Z Collecting urllib3==1.5.0
+2026-10-28T10:05:25.2313953Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:05:26.3332616Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:05:27.7699599Z   Downloading urllib3-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:28.7242083Z Collecting requests==1.0.0
+2026-10-28T10:05:29.5061109Z   Downloading requests-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:30.2574730Z Requirement already satisfied: requests in /opt/hostedtoolcache/Python
+2026-10-28T10:05:31.6516710Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:05:32.5590803Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:33.1133594Z   Downloading urllib3-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:34.9644259Z   Downloading urllib3-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:35.6399372Z   Downloading pluggy-1.7.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:36.2882606Z Requirement already satisfied: iniconfig in /opt/hostedtoolcache/Python
+2026-10-28T10:05:37.6911662Z   Downloading pluggy-1.0.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:38.3112250Z   Downloading idna-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:39.5547964Z Requirement already satisfied: charset-normalizer in /opt/hostedtoolcache/Python
+2026-10-28T10:05:40.7797506Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:05:41.2527951Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:05:42.9853902Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:43.8979002Z Collecting iniconfig==1.6.0
+2026-10-28T10:05:44.8024974Z Collecting idna==1.7.0
+2026-10-28T10:05:45.9988594Z Collecting requests==1.8.0
+2026-10-28T10:05:46.7606376Z Requirement already satisfied: requests in /opt/hostedtoolcache/Python
+2026-10-28T10:05:47.6051539Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:05:48.4680795Z   Downloading charset-normalizer-1.2.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:49.6077984Z   Downloading pluggy-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:50.3233448Z Collecting certifi==1.4.0
+2026-10-28T10:05:51.1904947Z Requirement already satisfied: requests in /opt/hostedtoolcache/Python
+2026-10-28T10:05:52.9531686Z Collecting certifi==1.6.0
+2026-10-28T10:05:53.2843287Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:54.3938474Z Collecting certifi==1.8.0
+2026-10-28T10:05:55.5036287Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:05:56.4607490Z Collecting requests==1.1.0
+2026-10-28T10:05:57.8291583Z Collecting packaging==1.2.0
+2026-10-28T10:05:58.5605243Z   Downloading packaging-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:05:59.1335311Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:00.5201218Z Requirement already satisfied: urllib3 in /opt/hostedtoolcache/Python
+2026-10-28T10:06:01.5545524Z   Downloading urllib3-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:06:02.9894379Z Requirement already satisfied: requests in /opt/hostedtoolcache/Python
+2026-10-28T10:06:03.5391350Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:04.8939550Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:06:05.3115158Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:06.7766041Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:07.2740695Z   Downloading idna-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:06:08.7265915Z   Downloading requests-1.4.0-py3-none-any.whl (64 kB)
+2026-10-28T10:06:09.2158882Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:06:10.7092519Z Collecting packaging==1.6.0
+2026-10-28T10:06:11.9512002Z Requirement already satisfied: pytest in /opt/hostedtoolcache/Python
+2026-10-28T10:06:12.1510256Z   Downloading packaging-1.8.0-py3-none-any.whl (64 kB)
+2026-10-28T10:06:13.6169529Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:06:14.8474031Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:15.3218135Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:16.3613433Z Collecting certifi==1.3.0
+2026-10-28T10:06:17.2247333Z Collecting certifi==1.4.0
+2026-10-28T10:06:18.3381132Z Requirement already satisfied: idna in /opt/hostedtoolcache/Python
+2026-10-28T10:06:19.4628380Z Collecting requests==1.6.0
+2026-10-28T10:06:20.9121371Z Requirement already satisfied: urllib3 in /opt/hostedtoolcache/Python
+2026-10-28T10:06:21.6628163Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:22.7125212Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:23.5904704Z   Downloading requests-1.1.0-py3-none-any.whl (64 kB)
+2026-10-28T10:06:24.3680458Z Collecting packaging==1.2.0
+2026-10-28T10:06:25.3610611Z   Downloading iniconfig-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:06:26.7404442Z Requirement already satisfied: pluggy in /opt/hostedtoolcache/Python
+2026-10-28T10:06:27.8377237Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:28.7805511Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:29.2977358Z Collecting pytest==1.7.0
+2026-10-28T10:06:30.3435104Z Collecting charset-normalizer==1.8.0
+2026-10-28T10:06:31.5525751Z Collecting pluggy==1.0.0
+2026-10-28T10:06:32.5954184Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:33.1137318Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:34.1162711Z Collecting pluggy==1.3.0
+2026-10-28T10:06:35.3224279Z Collecting charset-normalizer==1.4.0
+2026-10-28T10:06:36.7367059Z   Downloading pluggy-1.5.0-py3-none-any.whl (64 kB)
+2026-10-28T10:06:37.2696899Z   Downloading packaging-1.6.0-py3-none-any.whl (64 kB)
+2026-10-28T10:06:38.8709614Z      [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.6/64.6 kB[0m
+2026-10-28T10:06:39.1509460Z Requirement already satisfied: packaging in /opt/hostedtoolcache/Python
+2026-10-28T10:06:40.8246983Z Collecting iniconfig==1.0.0
+2026-10-28T10:06:41.8084669Z Requirement already satisfied: certifi in /opt/hostedtoolcache/Python
+2026-10-28T10:06:42.5631564Z Collecting packaging==1.2.0
+2026-10-28T10:06:43.7209987Z   Downloading charset-normalizer-1.3.0-py3-none-any.whl (64 kB)
+2026-10-28T10:06:44.7852333Z Successfully installed certifi idna requests urllib3 pytest
+2026-10-28T10:06:45.7813794Z ##[endgroup]
+2026-10-28T10:06:46.8750867Z ##[group]Run python -m pytest -q
+2026-10-28T10:06:47.1893794Z tests/test_misc.py::test_case_0 PASSED
+2026-10-28T10:06:48.2664076Z tests/test_misc.py::test_case_1 PASSED
+2026-10-28T10:06:49.8898107Z tests/test_misc.py::test_case_2 PASSED
+2026-10-28T10:06:50.1627706Z tests/test_misc.py::test_case_3 PASSED
+2026-10-28T10:06:51.1009902Z tests/test_misc.py::test_case_4 PASSED
+2026-10-28T10:06:52.1705743Z tests/test_misc.py::test_case_5 PASSED
+2026-10-28T10:06:53.2864378Z tests/test_misc.py::test_case_6 PASSED
+2026-10-28T10:06:54.3341678Z tests/test_misc.py::test_case_7 PASSED
+2026-10-28T10:06:55.9899373Z tests/test_misc.py::test_case_8 PASSED
+2026-10-28T10:06:56.9524140Z tests/test_misc.py::test_case_9 PASSED
+2026-10-28T10:06:57.6977527Z tests/test_misc.py::test_case_10 PASSED
+2026-10-28T10:06:58.5545003Z tests/test_misc.py::test_case_11 PASSED
+2026-10-28T10:06:59.6979702Z tests/test_misc.py::test_case_12 PASSED
+2026-10-28T10:07:00.8950956Z tests/test_misc.py::test_case_13 PASSED
+2026-10-28T10:07:01.5113327Z tests/test_misc.py::test_case_14 PASSED
+2026-10-28T10:07:02.5023371Z tests/test_misc.py::test_case_15 PASSED
+2026-10-28T10:07:03.2770674Z tests/test_misc.py::test_case_16 PASSED
+2026-10-28T10:07:04.7001495Z tests/test_misc.py::test_case_17 PASSED
+2026-10-28T10:07:05.3661859Z tests/test_misc.py::test_case_18 PASSED
+2026-10-28T10:07:06.2952921Z tests/test_misc.py::test_case_19 PASSED
+2026-10-28T10:07:07.1680794Z tests/test_misc.py::test_case_20 PASSED
+2026-10-28T10:07:08.6262988Z tests/test_misc.py::test_case_21 PASSED
+2026-10-28T10:07:09.8086605Z tests/test_misc.py::test_case_22 PASSED
+2026-10-28T10:07:10.6809213Z tests/test_misc.py::test_case_23 PASSED
+2026-10-28T10:07:11.5252870Z tests/test_misc.py::test_case_24 PASSED
+2026-10-28T10:07:12.1933940Z tests/test_misc.py::test_case_25 PASSED
+2026-10-28T10:07:13.8295952Z tests/test_misc.py::test_case_26 PASSED
+2026-10-28T10:07:14.7961458Z tests/test_misc.py::test_case_27 PASSED
+2026-10-28T10:07:15.7313321Z tests/test_misc.py::test_case_28 PASSED
+2026-10-28T10:07:16.7018729Z tests/test_misc.py::test_case_29 PASSED
+2026-10-28T10:07:17.5931357Z tests/test_misc.py::test_case_30 PASSED
+2026-10-28T10:07:18.6724989Z tests/test_misc.py::test_case_31 PASSED
+2026-10-28T10:07:19.8399091Z tests/test_misc.py::test_case_32 PASSED
+2026-10-28T10:07:20.4993982Z tests/test_misc.py::test_case_33 PASSED
+2026-10-28T10:07:21.9707304Z tests/test_misc.py::test_case_34 PASSED
+2026-10-28T10:07:22.3422185Z tests/test_misc.py::test_case_35 PASSED
+2026-10-28T10:07:23.1940047Z tests/test_misc.py::test_case_36 PASSED
+2026-10-28T10:07:24.6729371Z tests/test_misc.py::test_case_37 PASSED
+2026-10-28T10:07:25.2904239Z tests/test_misc.py::test_case_38 PASSED
+2026-10-28T10:07:26.9607440Z tests/test_misc.py::test_case_39 PASSED
+2026-10-28T10:07:27.3889027Z tests/test_misc.py::test_case_40 PASSED
+2026-10-28T10:07:28.9177875Z tests/test_misc.py::test_case_41 PASSED
+2026-10-28T10:07:29.6720771Z tests/test_misc.py::test_case_42 PASSED
+2026-10-28T10:07:30.3038132Z tests/test_misc.py::test_case_43 PASSED
+2026-10-28T10:07:31.1363473Z tests/test_misc.py::test_case_44 PASSED
+2026-10-28T10:07:32.9057358Z tests/test_misc.py::test_case_45 PASSED
+2026-10-28T10:07:33.4510030Z tests/test_misc.py::test_case_46 PASSED
+2026-10-28T10:07:34.7429677Z tests/test_misc.py::test_case_47 PASSED
+2026-10-28T10:07:35.3931170Z tests/test_misc.py::test_case_48 PASSED
+2026-10-28T10:07:36.7664658Z tests/test_misc.py::test_case_49 PASSED
+2026-10-28T10:07:37.4821923Z tests/test_misc.py::test_case_50 PASSED
+2026-10-28T10:07:38.2672629Z tests/test_misc.py::test_case_51 PASSED
+2026-10-28T10:07:39.5166686Z tests/test_misc.py::test_case_52 PASSED
+2026-10-28T10:07:40.6630604Z tests/test_misc.py::test_case_53 PASSED
+2026-10-28T10:07:41.6520517Z tests/test_misc.py::test_case_54 PASSED
+2026-10-28T10:07:42.5113308Z tests/test_misc.py::test_case_55 PASSED
+2026-10-28T10:07:43.8739420Z tests/test_misc.py::test_case_56 PASSED
+2026-10-28T10:07:44.8904870Z tests/test_misc.py::test_case_57 PASSED
+2026-10-28T10:07:45.7200017Z tests/test_misc.py::test_case_58 PASSED
+2026-10-28T10:07:46.9264878Z tests/test_misc.py::test_case_59 PASSED
+2026-10-28T10:07:47.4250889Z tests/test_misc.py::test_case_60 PASSED
+2026-10-28T10:07:48.8247609Z tests/test_misc.py::test_case_61 PASSED
+2026-10-28T10:07:49.8392115Z tests/test_misc.py::test_case_62 PASSED
+2026-10-28T10:07:50.7691726Z tests/test_misc.py::test_case_63 PASSED
+2026-10-28T10:07:51.3020148Z tests/test_misc.py::test_case_64 PASSED
+2026-10-28T10:07:52.9191940Z tests/test_misc.py::test_case_65 PASSED
+2026-10-28T10:07:53.5470401Z tests/test_misc.py::test_case_66 PASSED
+2026-10-28T10:07:54.3100756Z tests/test_misc.py::test_case_67 PASSED
+2026-10-28T10:07:55.3514589Z tests/test_misc.py::test_case_68 PASSED
+2026-10-28T10:07:56.1200358Z tests/test_misc.py::test_case_69 PASSED
+2026-10-28T10:07:57.7310258Z tests/test_misc.py::test_case_70 PASSED
+2026-10-28T10:07:58.7956119Z tests/test_misc.py::test_case_71 PASSED
+2026-10-28T10:07:59.2828255Z tests/test_misc.py::test_case_72 PASSED
+2026-10-28T10:08:00.1439962Z tests/test_misc.py::test_case_73 PASSED
+2026-10-28T10:08:01.2251344Z tests/test_misc.py::test_case_74 PASSED
+2026-10-28T10:08:02.4069652Z tests/test_misc.py::test_case_75 PASSED
+2026-10-28T10:08:03.8697339Z tests/test_misc.py::test_case_76 PASSED
+2026-10-28T10:08:04.7325303Z tests/test_misc.py::test_case_77 PASSED
+2026-10-28T10:08:05.9422833Z tests/test_misc.py::test_case_78 PASSED
+2026-10-28T10:08:06.5840284Z tests/test_misc.py::test_case_79 PASSED
+2026-10-28T10:08:07.3609041Z tests/test_misc.py::test_case_80 PASSED
+2026-10-28T10:08:08.3588534Z tests/test_misc.py::test_case_81 PASSED
+2026-10-28T10:08:09.9801384Z tests/test_misc.py::test_case_82 PASSED
+2026-10-28T10:08:10.2773940Z tests/test_misc.py::test_case_83 PASSED
+2026-10-28T10:08:11.5271283Z tests/test_misc.py::test_case_84 PASSED
+2026-10-28T10:08:12.1315194Z tests/test_misc.py::test_case_85 PASSED
+2026-10-28T10:08:13.8791863Z tests/test_misc.py::test_case_86 PASSED
+2026-10-28T10:08:14.7652962Z tests/test_misc.py::test_case_87 PASSED
+2026-10-28T10:08:15.4831355Z tests/test_misc.py::test_case_88 PASSED
+2026-10-28T10:08:16.7556408Z tests/test_misc.py::test_case_89 PASSED
+2026-10-28T10:08:17.1089322Z tests/test_misc.py::test_case_90 PASSED
+2026-10-28T10:08:18.5185485Z tests/test_misc.py::test_case_91 PASSED
+2026-10-28T10:08:19.8096262Z tests/test_misc.py::test_case_92 PASSED
+2026-10-28T10:08:20.3665981Z tests/test_misc.py::test_case_93 PASSED
+2026-10-28T10:08:21.4004006Z tests/test_misc.py::test_case_94 PASSED
+2026-10-28T10:08:22.6745784Z tests/test_misc.py::test_case_95 PASSED
+2026-10-28T10:08:23.5012275Z tests/test_misc.py::test_case_96 PASSED
+2026-10-28T10:08:24.2276030Z tests/test_misc.py::test_case_97 PASSED
+2026-10-28T10:08:25.9998603Z tests/test_misc.py::test_case_98 PASSED
+2026-10-28T10:08:26.3700267Z tests/test_misc.py::test_case_99 PASSED
+2026-10-28T10:08:27.3946202Z tests/test_misc.py::test_case_100 PASSED
+2026-10-28T10:08:28.7302919Z tests/test_misc.py::test_case_101 PASSED
+2026-10-28T10:08:29.1361938Z tests/test_misc.py::test_case_102 PASSED
+2026-10-28T10:08:30.9608696Z tests/test_misc.py::test_case_103 PASSED
+2026-10-28T10:08:31.4638357Z tests/test_misc.py::test_case_104 PASSED
+2026-10-28T10:08:32.8171004Z tests/test_misc.py::test_case_105 PASSED
+2026-10-28T10:08:33.4953767Z tests/test_misc.py::test_case_106 PASSED
+2026-10-28T10:08:34.1678732Z tests/test_misc.py::test_case_107 PASSED
+2026-10-28T10:08:35.9651373Z tests/test_misc.py::test_case_108 PASSED
+2026-10-28T10:08:36.4191685Z tests/test_misc.py::test_case_109 PASSED
+2026-10-28T10:08:37.9456210Z tests/test_misc.py::test_case_110 PASSED
+2026-10-28T10:08:38.2295550Z tests/test_misc.py::test_case_111 PASSED
+2026-10-28T10:08:39.5159335Z tests/test_misc.py::test_case_112 PASSED
+2026-10-28T10:08:40.7680068Z tests/test_misc.py::test_case_113 PASSED
+2026-10-28T10:08:41.8800515Z tests/test_misc.py::test_case_114 PASSED
+2026-10-28T10:08:42.2998056Z tests/test_misc.py::test_case_115 PASSED
+2026-10-28T10:08:43.1811135Z tests/test_misc.py::test_case_116 PASSED
+2026-10-28T10:08:44.7492569Z tests/test_misc.py::test_case_117 PASSED
+2026-10-28T10:08:45.2504670Z tests/test_misc.py::test_case_118 PASSED
+2026-10-28T10:08:46.2586972Z tests/test_misc.py::test_case_119 PASSED
+2026-10-28T10:08:47.9035003Z ============================= FAILURES =============================
+2026-10-28T10:08:48.1754631Z _________________________ test_checkout_total _________________________
+2026-10-28T10:08:49.9698605Z 
+2026-10-28T10:08:50.5012993Z     def test_checkout_total():
+2026-10-28T10:08:51.1204150Z         cart = [Item('pen', 10, 2), Item('book', 250, 1)]
+2026-10-28T10:08:52.1349822Z >       assert checkout(cart) == 270
+2026-10-28T10:08:53.6234620Z 
+2026-10-28T10:08:54.8825385Z tests/test_checkout.py:14: 
+2026-10-28T10:08:55.5665283Z _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+2026-10-28T10:08:56.7971923Z 
+2026-10-28T10:08:57.3796730Z cart = [Item(name='pen', price=10, qty=2), Item(name='book', price=250, qty=1)]
+2026-10-28T10:08:58.3234748Z 
+2026-10-28T10:08:59.6340526Z     def checkout(cart):
+2026-10-28T10:09:00.9970580Z >       return calc_total(cart)
+2026-10-28T10:09:01.8527693Z E       NameError: name 'calc_total' is not defined
+2026-10-28T10:09:02.9415235Z 
+2026-10-28T10:09:03.8006302Z tinyshop/checkout.py:7: NameError
+2026-10-28T10:09:04.3812161Z =========================== short test summary info ============================
+2026-10-28T10:09:05.7635121Z FAILED tests/test_checkout.py::test_checkout_total - NameError: name 'calc_total' is not defined
+2026-10-28T10:09:06.7527831Z 1 failed, 120 passed in 2.31s
+2026-10-28T10:09:07.4367513Z ##[error]Process completed with exit code 1.
