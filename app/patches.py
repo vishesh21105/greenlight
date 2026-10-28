@@ -292,5 +292,21 @@ def apply_diff(repo_dir: str | Path, diff_text: str, check_only: bool = False) -
         os.unlink(patch_file)
 
 
+def reverted_lines(patch_diff: str, commit_diff: str) -> list[str]:
+    """Lines the patch removes that the breaking commit had just added.
+
+    If the fix undoes part of the developer's own change, a reviewer must be told:
+    the change may have been intended, and the test may be what is out of date.
+    """
+    added_by_commit: dict[str, set[str]] = {}
+    for fc in parse_diff(commit_diff):
+        added_by_commit.setdefault(fc.path, set()).update(l.strip() for l in fc.added if len(l.strip()) > 3)
+    hits = []
+    for fc in parse_diff(patch_diff):
+        recent = added_by_commit.get(fc.path, set())
+        hits += [l.strip() for l in fc.removed if l.strip() in recent]
+    return hits
+
+
 # Public name, used by the agent's file tools.
 path_problem = _path_problem

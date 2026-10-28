@@ -81,7 +81,7 @@
   <h2 id="patch">Proposed {{ 'fix' if patches|length == 1 else 'fixes' }}</h2>
   {% for p in patches %}
     <div class="patch">
-      <p><strong>{{ 'Verified' if p.verified else 'Did not pass verification' }}</strong> · {{ p.files_changed }} file{{ '' if p.files_changed == 1 else 's' }}, {{ p.lines_changed }} lines{% if p.touches_tests %} · changes a test file{% endif %}</p>
+      <p><strong>{{ 'Verified' if p.verified else 'Did not pass verification' }}</strong> · {{ p.files_changed }} file{{ '' if p.files_changed == 1 else 's' }}, {{ p.lines_changed }} lines{% if p.touches_tests %} · changes a test file{% endif %}{% if p.reverts_recent_change %} · <strong>undoes part of the breaking commit: check it was not intended</strong>{% endif %}</p>
       <p>{{ p.rationale }}</p>
       <pre class="block diff">{% for cls, line in p.diff | diff_lines %}<span class="{{ cls }}">{{ line }}</span>{% endfor %}</pre>
     </div>

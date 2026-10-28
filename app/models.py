@@ -116,6 +116,7 @@ class Patch(SQLModel, table=True):
     files_changed: int = 0
     lines_changed: int = 0
     touches_tests: bool = False
+    reverts_recent_change: bool = False
     valid: bool = False
     validation_errors: list = Field(default_factory=list, sa_column=Column(JSON))
     verified: bool = False

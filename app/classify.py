@@ -122,7 +122,7 @@ def classify(log: DistilledLog, repo_modules: Optional[set[str]] = None, llm=Non
     user = f"Trimmed CI log:\n```\n{log.text[:8000]}\n```\n\nChanges in the failing commit:\n```diff\n{commit_diff[:6000]}\n```"
     try:
         resp = llm.chat([{"role": "system", "content": _CLASSIFY_PROMPT}, {"role": "user", "content": user}],
-                        max_tokens=200, temperature=0)
+                        max_tokens=1500, temperature=0)
         if on_usage:
             on_usage(resp, "classify")
         data = _parse_json(resp.text)

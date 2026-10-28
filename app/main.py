@@ -181,7 +181,8 @@ def get_patches(incident_id: str):
         rows = s.exec(select(Patch).where(Patch.incident_id == incident_id).order_by(Patch.created_at)).all()
         return [{"id": p.id, "hash": p.patch_hash, "diff": p.diff_text, "rationale": p.rationale,
                  "files_changed": p.files_changed, "lines_changed": p.lines_changed,
-                 "touches_tests": p.touches_tests, "verified": p.verified, "pr_url": p.pr_url} for p in rows]
+                 "touches_tests": p.touches_tests, "reverts_recent_change": p.reverts_recent_change,
+                 "verified": p.verified, "pr_url": p.pr_url} for p in rows]
 
 
 @app.post("/api/v1/incidents/{incident_id}/retry")

@@ -40,10 +40,16 @@ class Settings:
     llm_base_url: str = field(default_factory=lambda: _get("LLM_BASE_URL", ""))
     llm_api_key: str = field(default_factory=lambda: _get("LLM_API_KEY"))
     llm_model: str = field(default_factory=lambda: _get("LLM_MODEL", ""))
+    # Comma-separated models to switch to when the main one is out of quota (free tiers).
+    llm_fallback_models: str = field(default_factory=lambda: _get("LLM_FALLBACK_MODELS", ""))
     # Prices per 1 million tokens, in US dollars, used to estimate cost. Set them from
     # your provider's current price page; leave at 0 if unknown.
     llm_input_price_per_m: float = field(default_factory=lambda: _get_float("LLM_INPUT_PRICE_PER_M", 0.0))
     llm_output_price_per_m: float = field(default_factory=lambda: _get_float("LLM_OUTPUT_PRICE_PER_M", 0.0))
+    # Optional "reasoning_effort" for models that think before answering (e.g. low / medium / high).
+    llm_reasoning_effort: str = field(default_factory=lambda: _get("LLM_REASONING_EFFORT", ""))
+    # Minimum seconds between model calls. Free tiers allow few calls per minute (e.g. 7 for ~8/min).
+    llm_min_interval_seconds: float = field(default_factory=lambda: _get_float("LLM_MIN_INTERVAL_SECONDS", 0.0))
 
     # Sandbox: "docker" for real isolation, "local" ONLY for development on your own demo repos.
     sandbox_backend: str = field(default_factory=lambda: _get("SANDBOX_BACKEND", "docker"))

@@ -126,3 +126,20 @@ def test_policy_comes_from_the_green_commit_not_the_failing_one(tmp_path):
     iid = setup_incident(tmp_path, repo, green, git(repo, "rev-parse", "HEAD"), "log")
     policy = load_trusted_policy(repo, green, iid)
     assert policy.max_files_changed == 3
+
+
+def test_ai_outage_still_gives_a_diagnosis(tmp_path):
+    repo, green, broken = make_repo(tmp_path / "src")
+    iid = setup_incident(tmp_path, repo, green, broken)
+
+    class Down:
+        name, model = "x", "y"
+
+        def chat(self, *a, **k):
+            raise TimeoutError("quota exhausted")
+
+    process_incident(iid, services(Down()))
+    inc = state_of(iid)
+    assert inc.state == "diagnosed_no_fix"
+    comment = (Path(config.settings.workspace_dir) / iid / "comment.md").read_text()
+    assert "AI model could not be reached" in comment

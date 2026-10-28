@@ -15,9 +15,14 @@ def pr_title(incident_short: str, summary: str) -> str:
 
 
 def pr_body(category: str, rationale: str, failing_tests: list[str], verify_failing: str,
-            verify_full: str, touches_tests: bool, cost_usd: float, dashboard_url: str) -> str:
+            verify_full: str, touches_tests: bool, cost_usd: float, dashboard_url: str,
+            reverted: list[str] | None = None) -> str:
     warn = ("\n> **Heads-up:** this patch changes a test file. Check that the test change is intended "
             "and does not hide a real bug.\n" if touches_tests else "")
+    if reverted:
+        sample = "\n".join(f"> `{l[:100]}`" for l in reverted[:3])
+        warn += ("\n> **Heads-up:** this patch UNDOES part of the change that broke the build:\n" + sample +
+                 "\n> If that change was intended, the test may be what is out of date. Please decide before merging.\n")
     return (
         f"## Why the build failed\n{rationale}\n{warn}\n"
         f"**Category:** `{category}`\n\n"

@@ -151,3 +151,12 @@ def test_scrub_hides_secrets():
 def test_scrub_leaves_normal_text():
     text = "NameError: name 'calc_total' is not defined"
     assert scrub(text) == (text, 0)
+
+
+def test_reverted_lines_flags_undoing_the_breaking_commit():
+    from app.patches import reverted_lines
+    commit = _diff("shop/pricing.py", ["    return amount * 90 // 100"], ["    return -(-amount * 90 // 100)  # round up"])
+    undo = _diff("shop/pricing.py", ["    return -(-amount * 90 // 100)  # round up"], ["    return amount * 90 // 100"])
+    other = _diff("shop/checkout.py", ["    return calc(cart)"], ["    return total(cart)"])
+    assert reverted_lines(undo, commit) == ["return -(-amount * 90 // 100)  # round up"]
+    assert reverted_lines(other, commit) == []

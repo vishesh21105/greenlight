@@ -37,6 +37,17 @@ The demo builds real git repositories with real broken commits and runs the full
 
 Without an AI key the demo uses a **scripted replay** of the agent (clearly marked on the timeline).
 Set `LLM_API_KEY` and `LLM_MODEL` (see `.env.example`) and the same demo runs with a real model.
+For a free Google Gemini key:
+
+```bash
+export LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+export LLM_API_KEY=<your key>
+export LLM_MODEL=gemini-3.5-flash
+export LLM_FALLBACK_MODELS=gemini-flash-latest,gemini-2.5-flash   # used when a model runs out of free quota
+export LLM_MIN_INTERVAL_SECONDS=7                                  # free tier: few calls per minute
+export LLM_REASONING_EFFORT=low
+python -m app.demo
+```
 
 > The demo uses the `local-noinstall` sandbox, which runs tests on your machine with **no isolation**.
 > It is only for these demo repositories. Real repositories always use the Docker sandbox.
@@ -76,7 +87,7 @@ app/
   metrics.py         numbers for the metrics page
   demo.py            the offline demo
 demo/tinyshop/       the small shop library used as the demo repository
-tests/               65 tests covering every safety rule and the full loop
+tests/               73 tests covering every safety rule and the full loop
 ```
 
 ## Safety in one paragraph
@@ -91,7 +102,8 @@ or skipping tests, size limits. A fix is only offered after the sandbox has seen
 
 Built so far (plan phases 0 to 6, core): webhook, log trimming, classification, sandbox reproduction with flaky
 detection, agent with tools and budgets, patch safety checks, verification with repair attempts, draft PRs and
-comments, dashboard and metrics, 65 tests.
+comments, dashboard and metrics, 73 tests. Tested end to end with a real model (Gemini 3.5 Flash) on all four
+demo scenarios.
 
 Next:
 1. **Connect a real GitHub App and a real model** and run the `tinyshop` demo repository end to end.
