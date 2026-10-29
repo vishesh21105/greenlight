@@ -49,9 +49,11 @@ jobs:
           LLM_REASONING_EFFORT: low
         run: python -m benchmark.daily --budget 45
       - name: Save the results to the repository
+        if: always()
         run: |
           git config user.name "GreenLight benchmark"
           git config user.email "greenlight-benchmark@users.noreply.github.com"
+          python -m benchmark.report > /dev/null || echo "report failed; saving raw results anyway"
           git add benchmark/results
           if git diff --cached --quiet; then echo "nothing new"; exit 0; fi
           git commit -m "Benchmark: daily batch $(date -u +%Y-%m-%d)"
