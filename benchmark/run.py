@@ -70,14 +70,21 @@ def score_patch(meta: dict, diff: str) -> dict:
         return {"applies": True, "suite_passes": suite.passed, "hidden_passes": hidden}
 
 
-def judge(meta: dict, outcome: dict) -> dict:
+def judge(meta: dict, outcome: dict, mode: str = "greenlight") -> dict:
     """Turn what happened into benchmark verdicts."""
     expected = meta["expected"]
     fixed = outcome["state"] == "fixed"
     s = outcome.get("score") or {}
     correct_fix = fixed and s.get("suite_passes") and (s.get("hidden_passes") in (True, None))
+    if expected == "fix":
+        success = correct_fix
+    elif mode == "log_only":
+        # The baseline cannot say "flaky" or "infra"; leaving the code alone counts as right (generous to it).
+        success = not fixed and outcome["state"] != "error"
+    else:
+        success = outcome["state"] == expected
     verdict = {
-        "success": (correct_fix if expected == "fix" else outcome["state"] == expected),
+        "success": bool(success),
         "opened_pr": fixed,
         "wrong_fix": fixed and not correct_fix if expected == "fix" else fixed,
         "classified_right": None,
@@ -140,6 +147,8 @@ def run_greenlight(meta: dict, mode: str, llm, work: Path) -> dict:
         "state": inc.state, "category": inc.category, "seconds": round(seconds, 1),
         "raw_log_lines": inc.raw_log_lines, "trimmed_log_lines": inc.trimmed_log_lines,
         "llm_calls": len(calls), "input_tokens": sum(c.input_tokens for c in calls),
+        "ai_seconds": round(sum(c.latency_ms for c in calls) / 1000, 1),
+        "calls_by_model": dict(__import__("collections").Counter(c.model for c in calls)),
         "output_tokens": sum(c.output_tokens for c in calls), "cost_usd": inc.total_cost_usd or 0.0,
         "models": sorted({c.model for c in calls}),
         "tool_calls": sum(1 for e in events if e.type == "tool_call"),
@@ -201,7 +210,8 @@ def run_log_only(meta: dict, llm, work: Path) -> dict:
     except Exception as exc:
         outcome.update(state="error", error=f"{type(exc).__name__}")
         return outcome
-    outcome.update(input_tokens=resp.input_tokens, output_tokens=resp.output_tokens, models=[resp.model])
+    outcome.update(input_tokens=resp.input_tokens, output_tokens=resp.output_tokens, models=[resp.model],
+                   calls_by_model={resp.model: 1}, ai_seconds=round(resp.latency_ms / 1000, 1))
     m = re.search(r"\{.*\}", resp.text or "", re.S)
     try:
         data = json.loads(m.group(0)) if m else {}
@@ -258,7 +268,8 @@ def main(argv: list[str] | None = None) -> int:
     os.environ.setdefault("GREENLIGHT_WORKSPACE", str(work / "workspaces"))
     os.environ.setdefault("SANDBOX_SKIP_INSTALL", "1")
     os.environ.setdefault("SANDBOX_TIMEOUT_SECONDS", "240")
-    os.environ.setdefault("MAX_INCIDENT_SECONDS", "900")
+    # Free AI tiers queue requests for minutes at a time; the benchmark measures fixes, not queueing.
+    os.environ.setdefault("MAX_INCIDENT_SECONDS", "2400")
     from app import config
     config.reload_settings()
     from app.db import init_db
@@ -296,7 +307,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Stopping: the AI quota ran out during {meta['id']}; it will be retried next time.", flush=True)
             break
         ran += 1
-        verdict = judge(meta, outcome)
+        verdict = judge(meta, outcome, args.mode)
         row = {"id": meta["id"], "set": meta["set"], "repo": meta["repo"], "category": meta["category"],
                "expected": meta["expected"], "mode": args.mode, **outcome, "verdict": verdict,
                "time": time.strftime("%Y-%m-%dT%H:%M:%S")}

@@ -39,6 +39,7 @@ def summarize(rows: list[dict]) -> dict:
     wrong = [r for r in rows if r["verdict"]["wrong_fix"]]
     fixed_ok = [r for r in fix_cases if r["verdict"]["success"]]
     seconds = [r["seconds"] for r in fixed_ok if r.get("seconds")]
+    own = [max(0.0, r["seconds"] - (r.get("ai_seconds") or 0)) for r in fixed_ok if r.get("seconds") and "ai_seconds" in r]
     calls = [r.get("llm_calls", 0) for r in rows]
     tokens = sum((r.get("input_tokens") or 0) + (r.get("output_tokens") or 0) for r in rows)
     kept = [r["trimmed_log_lines"] / r["raw_log_lines"] for r in rows if r.get("raw_log_lines") and r.get("trimmed_log_lines")]
@@ -53,6 +54,7 @@ def summarize(rows: list[dict]) -> dict:
         "nonfix_right": pct(sum(r["verdict"]["success"] for r in nonfix), len(nonfix)),
         "classified": pct(sum(r["verdict"]["classified_right"] for r in classified), len(classified)),
         "median_seconds": f"{statistics.median(seconds):.0f}s" if seconds else "n/a",
+        "median_own_seconds": f"{statistics.median(own):.0f}s" if own else "n/a",
         "calls_per_case": f"{statistics.mean(calls):.1f}" if calls else "n/a",
         "tokens_per_fix": f"{tokens / len(fixed_ok):,.0f}" if fixed_ok else "n/a",
         "log_kept": f"{100 * statistics.mean(kept):.1f}%" if kept else "n/a",
@@ -71,17 +73,26 @@ def main() -> int:
     out = ["# GreenLight benchmark results", ""]
     gl = data.get("greenlight", [])
     if gl:
-        models = Counter(m for r in gl for m in r.get("models", []))
+        models = Counter()
+        for r in gl:
+            if r.get("calls_by_model"):
+                models.update(r["calls_by_model"])
+            else:
+                models.update({m: 1 for m in r.get("models", [])})
         out += [f"Cases: {len(gl)} ({sum(r['set'] == 'A' for r in gl)} seeded, {sum(r['set'] == 'B' for r in gl)} "
                 f"real historical bugs) across {len({r['repo'] for r in gl})} projects. "
-                f"Model(s): {', '.join(f'{m} ({n} calls)' for m, n in models.most_common())}.", ""]
+                ("Model(s): " + ", ".join(f"{m} ({n} calls)" for m, n in models.most_common())
+                 if all(r.get("calls_by_model") for r in gl)
+                 else "Model(s) used: " + ", ".join(m for m, _ in models.most_common())) + ".", ""]
 
     labels = [("Cases run", "cases"), ("Fix rate (verified fix that also passes hidden tests)", "fix_rate"),
               ("PR precision (opened fixes that are correct)", "pr_precision"),
               ("Wrong-fix rate (opened fixes that are wrong)", "wrong_fix"),
               ("Flaky / infra handled without a patch", "nonfix_right"),
               ("Failure kind classified correctly", "classified"),
-              ("Median time to a correct fix", "median_seconds"), ("AI calls per case", "calls_per_case"),
+              ("Median time to a correct fix (including waits for the free AI tier)", "median_seconds"),
+              ("Median GreenLight time to a correct fix (excluding AI wait)", "median_own_seconds"),
+              ("AI calls per case", "calls_per_case"),
               ("Tokens per correct fix", "tokens_per_fix"), ("Share of log sent to the AI", "log_kept"),
               ("Secret leaks", "secret_leaks")]
     sums = {m: summarize(rows) for m, rows in data.items()}
@@ -116,7 +127,7 @@ def main() -> int:
             if v["wrong_fix"]:
                 notes.append("WRONG FIX")
             if r.get("reverts_recent_change"):
-                notes.append("undoes part of the breaking commit (flagged)")
+                notes.append("reverts the broken line (reviewer warned)")
             if r.get("touches_tests"):
                 notes.append("edits a test (flagged)")
             sc = r.get("score") or {}
@@ -138,6 +149,9 @@ def main() -> int:
             "old code, and GreenLight must make it pass without breaking anything else.",
             "- All project code runs inside the Docker sandbox. Each case is run once; AI models are not deterministic, "
             "so small differences between runs are expected.",
+            "- Runs use the free Gemini tier, which queues requests and limits calls per day, so total times include "
+            "waiting for the AI. The row excluding AI wait shows GreenLight's own work (sandbox runs, tools, checks).",
+            "- A case where the AI provider refused or timed out because of quota is not recorded; it runs again later.",
             "- Baseline: the same model is asked once with the end of the CI log, the commit diff and the changed files, "
             "with no tools, no reproduction and no verification. Its patch counts as a pull request if it applies.", ""]
     (RESULTS / "REPORT.md").write_text("\n".join(out))
