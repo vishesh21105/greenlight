@@ -112,3 +112,30 @@ def test_interrupted_jobs_are_resumed(client):
     assert recover_interrupted_jobs() == 1
     with session_scope() as s:
         assert s.get(Job, job.id).status == "waiting"
+
+
+def test_last_green_handles_branches_without_runs(monkeypatch):
+    """A new branch has no passing runs; GreenLight must fall back to the default branch, not crash."""
+    from types import SimpleNamespace
+    from app.github_client import GitHubCodeHost
+
+    class Runs:
+        def __init__(self, items):
+            self.items = items
+
+        def __iter__(self):
+            return iter(self.items)
+
+    class FakeRepo:
+        def get_workflow(self, wid):
+            return SimpleNamespace(get_runs=lambda branch, status: Runs(
+                [] if branch == "feature" else [SimpleNamespace(head_sha="bad"), SimpleNamespace(head_sha="good")]))
+
+        def compare(self, base, head):
+            return SimpleNamespace(status="ahead" if base == "good" else "diverged")
+
+    host = GitHubCodeHost(token="t")
+    monkeypatch.setattr(host, "_gh_repo", lambda repo: FakeRepo())
+    repo = SimpleNamespace(default_branch="main", full_name="a/b")
+    inc = SimpleNamespace(branch="feature", workflow_id=5, failing_sha="bad")
+    assert host.last_green_sha(repo, inc) == "good"

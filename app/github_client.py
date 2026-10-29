@@ -7,6 +7,7 @@ LocalCodeHost   - uses local git folders instead of GitHub; for development and 
 from __future__ import annotations
 
 import io
+import itertools
 import os
 import subprocess
 import zipfile
@@ -140,21 +141,29 @@ class GitHubCodeHost:
         return "\n".join(parts)
 
     def last_green_sha(self, repo, incident):
-        """The newest commit on the same branch where the SAME workflow passed."""
+        """The newest earlier commit where the SAME workflow passed.
+
+        Looks on the failing branch first, then on the default branch (a new branch usually
+        starts from there and has no passing runs of its own yet).
+        """
         gh = self._gh_repo(repo)
-        if incident.workflow_id:
-            runs = gh.get_workflow(incident.workflow_id).get_runs(branch=incident.branch, status="success")
-        else:
-            runs = gh.get_workflow_runs(branch=incident.branch, status="success")
-        for run in runs[:30]:
-            if run.head_sha == incident.failing_sha:
-                continue
-            try:
-                # Only a commit that comes before the failing one is a fair comparison.
-                if gh.compare(run.head_sha, incident.failing_sha).status in ("ahead", "identical"):
-                    return run.head_sha
-            except Exception:
-                continue
+        branches = [incident.branch] if incident.branch else []
+        if repo.default_branch and repo.default_branch not in branches:
+            branches.append(repo.default_branch)
+        for branch in branches:
+            if incident.workflow_id:
+                runs = gh.get_workflow(incident.workflow_id).get_runs(branch=branch, status="success")
+            else:
+                runs = gh.get_workflow_runs(branch=branch, status="success")
+            for run in itertools.islice(runs, 30):      # islice: safe even when there are no runs
+                if run.head_sha == incident.failing_sha:
+                    continue
+                try:
+                    # Only a commit that comes before the failing one is a fair comparison.
+                    if gh.compare(run.head_sha, incident.failing_sha).status in ("ahead", "identical"):
+                        return run.head_sha
+                except Exception:
+                    continue
         return None
 
     def open_pull_request(self, repo, incident, patched_dir, branch, title, body):

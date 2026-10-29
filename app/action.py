@@ -112,6 +112,9 @@ def main() -> int:
     # Short timeline in annotations too (readable through the checks API).
     tail = [e.message[:180] for e in events if e.type in ("state", "warning", "error")][-12:]
     _annotate("notice", "GreenLight timeline", "\n".join(tail))
+    for e in events:
+        if e.type == "error" and e.payload.get("traceback"):
+            _annotate("error", "GreenLight traceback", e.payload["traceback"][-1800:])
     return 0 if inc.state != "error" else 1
 
 
