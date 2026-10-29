@@ -79,11 +79,12 @@ def main() -> int:
                 models.update(r["calls_by_model"])
             else:
                 models.update({m: 1 for m in r.get("models", [])})
+        if all(r.get("calls_by_model") for r in gl):
+            model_line = "Model(s): " + ", ".join(f"{m} ({n} calls)" for m, n in models.most_common())
+        else:
+            model_line = "Model(s) used: " + ", ".join(m for m, _ in models.most_common())
         out += [f"Cases: {len(gl)} ({sum(r['set'] == 'A' for r in gl)} seeded, {sum(r['set'] == 'B' for r in gl)} "
-                f"real historical bugs) across {len({r['repo'] for r in gl})} projects. "
-                ("Model(s): " + ", ".join(f"{m} ({n} calls)" for m, n in models.most_common())
-                 if all(r.get("calls_by_model") for r in gl)
-                 else "Model(s) used: " + ", ".join(m for m, _ in models.most_common())) + ".", ""]
+                f"real historical bugs) across {len({r['repo'] for r in gl})} projects. {model_line}.", ""]
 
     labels = [("Cases run", "cases"), ("Fix rate (verified fix that also passes hidden tests)", "fix_rate"),
               ("PR precision (opened fixes that are correct)", "pr_precision"),

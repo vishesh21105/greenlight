@@ -1,6 +1,6 @@
 # GreenLight benchmark results
 
-Cases: 4 (4 seeded, 0 real historical bugs) across 4 projects. Model(s): gemini-2.5-flash (3 calls), gemini-3.5-flash (1 calls), gemini-flash-latest (1 calls).
+Cases: 4 (4 seeded, 0 real historical bugs) across 4 projects. Model(s) used: gemini-2.5-flash, gemini-3.5-flash, gemini-flash-latest.
 
 ## Headline numbers
 
