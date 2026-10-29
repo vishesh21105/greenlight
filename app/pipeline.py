@@ -34,6 +34,9 @@ class Services:
     llm: Optional[LLMProvider]
     dashboard_base_url: str = "http://localhost:8000"
     incident_link: Optional[str] = None      # fixed link for every incident (e.g. the GitHub Actions run page)
+    # Switches used only by the benchmark's ablation runs (to measure what each design choice is worth).
+    skip_reproduction: bool = False          # patch without first reproducing the failure
+    raw_log_for_ai: bool = False             # give the AI the raw end of the log instead of the trimmed one
 
     def link_for(self, incident_id: str) -> str:
         return self.incident_link or f"{self.dashboard_base_url}/incidents/{incident_id}"
@@ -160,7 +163,13 @@ def _process(incident_id: str, svc: Services) -> None:
     # 2. Classify ---------------------------------------------------------------------
     policy = load_trusted_policy(repo_dir, base, inc.id)
     diff_text = commit_diff(repo_dir, base, inc.failing_sha)
-    cls = classify(log, repo_modules(repo_dir), llm=svc.llm, commit_diff=scrub_text(diff_text),
+    ai_log = log
+    if svc.raw_log_for_ai:
+        from app.logs import DistilledLog, clean_line
+        tail = [clean_line(l) for l in scrub_text(raw).splitlines()][-150:]
+        ai_log = DistilledLog("\n".join(tail), log.raw_lines, len(tail), log.failing_tests, log.error_types, log.key_lines)
+        add_event(inc.id, "warning", "Ablation: the AI sees the raw end of the log, not the trimmed log.")
+    cls = classify(ai_log, repo_modules(repo_dir), llm=svc.llm, commit_diff=scrub_text(diff_text),
                    on_usage=lambda r, purpose: record_usage(inc.id, r, purpose))
     set_state(inc.id, S.classified, f"Classified as {cls.category} ({cls.confidence:.0%}, by {cls.source}): {cls.reason}",
               category=cls.category, confidence=cls.confidence)
@@ -180,7 +189,9 @@ def _process(incident_id: str, svc: Services) -> None:
     targets = safe_test_targets(log.failing_tests)
     extra_context = ""
 
-    if not install.passed:
+    if svc.skip_reproduction and install.passed:
+        add_event(inc.id, "warning", "Ablation: skipping the reproduction step.")
+    elif not install.passed:
         if cls.category != "dependency":
             svc.code_host.comment(repo, inc, diagnosis_comment(
                 "could not set up the project", "Installing dependencies failed in GreenLight's sandbox, so the "
@@ -223,7 +234,7 @@ def _process(incident_id: str, svc: Services) -> None:
     ctx = ToolContext(repo_dir=repo_dir, deps_dir=deps_dir, policy=policy, sandbox=svc.sandbox, py_version=py,
                       failing_targets=targets, failing_sha=inc.failing_sha, base_sha=base,
                       on_test_run=lambda purpose, res: record_run(inc.id, purpose, res))
-    messages = build_initial_messages(cls.category, cls.reason, log.text + extra_context, log.failing_tests,
+    messages = build_initial_messages(cls.category, cls.reason, ai_log.text + extra_context, log.failing_tests,
                                       policy_summary(policy))
     budget = Budget(max_steps=s.max_agent_steps, max_cost_usd=s.max_cost_usd_per_incident,
                     max_seconds=s.max_incident_seconds)

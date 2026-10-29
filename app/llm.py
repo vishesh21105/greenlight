@@ -61,15 +61,30 @@ def _parse_args(raw: str) -> dict:
         return {"_invalid_arguments": raw}
 
 
-_RETRY_HINT = re.compile(r"retry(?:Delay)?[^0-9]{0,20}(\d+(?:\.\d+)?)\s*s", re.I)
+_RETRY_HINT = re.compile(r"retry(?:Delay)?[^0-9]{0,20}(?:(\d+)m)?(\d+(?:\.\d+)?)\s*s", re.I)
+_DAILY = re.compile(r"per ?day|PerDay|daily", re.I)
+
+
+def _error_text(exc: Exception) -> str:
+    return f"{exc} {getattr(exc, 'body', '')}"
 
 
 def _retry_delay(exc: Exception, attempt: int) -> float:
     """How long to wait after a 'too many requests' error: the server's hint, else exponential backoff."""
-    m = _RETRY_HINT.search(str(exc))
+    m = _RETRY_HINT.search(_error_text(exc))
     if m:
-        return min(float(m.group(1)) + 1.0, 90.0)
+        minutes = float(m.group(1) or 0)
+        return min(minutes * 60 + float(m.group(2)) + 1.0, 90.0)
     return min(10.0 * (2 ** attempt), 90.0)
+
+
+def _quota_used_up_for_today(exc: Exception) -> bool:
+    """A per-day quota will not come back by waiting a minute: switch models instead."""
+    text = _error_text(exc)
+    if _DAILY.search(text):
+        return True
+    m = _RETRY_HINT.search(text)
+    return bool(m and float(m.group(1) or 0) >= 5)
 
 
 class OpenAICompatibleProvider:
@@ -104,8 +119,8 @@ class OpenAICompatibleProvider:
         from openai import APIConnectionError, InternalServerError, NotFoundError, RateLimitError
         while True:
             is_last_model = self._model_idx == len(self.models) - 1
-            # With a fallback available, do not wait long on an exhausted model: switch instead.
-            retries = self.max_rate_retries if is_last_model else 1
+            # Per-minute limits: wait and retry the same model a few times before switching.
+            retries = self.max_rate_retries if is_last_model else 3
             for attempt in range(retries + 1):
                 self._throttle()
                 try:
@@ -115,7 +130,10 @@ class OpenAICompatibleProvider:
                         raise
                     break
                 except (RateLimitError, InternalServerError, APIConnectionError) as exc:
-                    if attempt == retries:
+                    daily = isinstance(exc, RateLimitError) and _quota_used_up_for_today(exc)
+                    if daily and not is_last_model:
+                        break                     # today's quota is gone: go straight to the next model
+                    if attempt == retries or daily:
                         if is_last_model:
                             raise
                         break

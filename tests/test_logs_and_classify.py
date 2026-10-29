@@ -86,3 +86,10 @@ def test_bad_model_answer_falls_back_to_rules():
             return R()
 
     assert classify(log, llm=BadLLM()).source == "rules"
+
+
+def test_actions_step_environment_is_noise():
+    log = distill("python -m pytest -q\nshell: /usr/bin/bash -e {0}\nenv:\n  pythonLocation: /opt/hostedtoolcache/Python/3.12\n"
+                  "  LD_LIBRARY_PATH: /opt/hostedtoolcache/x\nE   ImportError: cannot import name 'x' from 'shop.a'\n")
+    assert "hostedtoolcache" not in log.text and "shell:" not in log.text
+    assert "ImportError" in log.text

@@ -79,7 +79,7 @@ def test_switches_to_fallback_model_when_quota_is_used_up():
 
     provider.client.chat.completions.create = create
     assert provider.chat([{"role": "user", "content": "hi"}]).text == "ok"
-    assert used == ["main-model", "main-model", "backup-model"]
+    assert used == ["main-model"] * 4 + ["backup-model"]
     provider.chat([{"role": "user", "content": "again"}])
     assert used[-1] == "backup-model"          # stays on the working model
 
@@ -92,3 +92,23 @@ def test_tool_calls_are_sent_back_exactly_as_received():
            "extra_content": {"google": {"thought_signature": "abc123"}}}
     msg = _assistant_message(LLMResponse(text=None, tool_calls=[ToolCall("c1", "read_file", {"path": "a.py"}, raw["function"]["arguments"], raw)]))
     assert msg["tool_calls"][0]["extra_content"]["google"]["thought_signature"] == "abc123"
+
+
+def test_daily_quota_switches_model_without_waiting():
+    req = httpx.Request("POST", "https://example.com/v1/chat/completions")
+    daily = openai.RateLimitError("Error code: 429 - generate_content_free_tier_requests, limit: 20, "
+                                  "description: Generate content requests per day limit exceeded. Please retry in 10m58s.",
+                                  response=httpx.Response(429, request=req), body=None)
+    sleeps, used = [], []
+    provider = OpenAICompatibleProvider("k", "main", "https://example.com/v1", sleep=sleeps.append, fallback_models=["backup"])
+
+    def create(**kwargs):
+        used.append(kwargs["model"])
+        if kwargs["model"] == "main":
+            raise daily
+        return _Resp()
+
+    provider.client.chat.completions.create = create
+    provider.chat([{"role": "user", "content": "hi"}])
+    assert used == ["main", "backup"] and sleeps == []
+    assert _retry_delay(daily, 0) == 90.0          # 10m58s is capped

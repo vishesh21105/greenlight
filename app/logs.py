@@ -36,6 +36,8 @@ _NOISE = [
     re.compile(r"^\s*(Collecting|Downloading|Using cached|Requirement already satisfied|Installing collected|Successfully installed|Building wheel|Created wheel|Stored in directory)\b"),
     re.compile(r"^\s*━|^\s*\|?\s*[█▉▊▋▌▍▎▏ ]+\|"),            # progress bars
     re.compile(r"PASSED|::\w+ PASSED"),
+    # GitHub Actions echoes each step's shell and environment before running it.
+    re.compile(r"^\s*(shell: |env:\s*$)|hostedtoolcache|^\s{2}[A-Za-z_][A-Za-z0-9_]*: (/|\d|true|false)"),
 ]
 
 
