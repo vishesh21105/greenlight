@@ -25,7 +25,7 @@ from app.jobs import enqueue
 from app.llm import LLMResponse, ScriptedProvider, ToolCall, get_llm
 from app.models import Incident, Repository
 from app.pipeline import Services, process_incident
-from app.sandbox import LocalSandbox
+from app.sandbox import DockerSandbox, LocalSandbox
 from sqlmodel import select
 
 DEMO_SRC = Path(__file__).parent.parent / "demo" / "tinyshop"
@@ -143,18 +143,15 @@ def scenario_discount(repo: Path) -> dict:
 
 
 def scenario_flaky(repo: Path) -> dict:
-    """A test that fails on alternate runs: GreenLight should call it flaky and not patch."""
+    """A test that fails at random, like a real race condition: GreenLight should call it flaky and not patch."""
     (repo / "tests" / "test_stock.py").write_text(
-        "import os\nfrom pathlib import Path\n\n\n"
+        "import random\n\n\n"
         "def test_stock_sync():\n"
-        "    # Simulates a race with an external stock service: fails on alternate runs.\n"
-        "    marker = Path(os.environ.get('HOME', '/tmp')) / '.stock_sync_toggle'\n"
-        "    flip = not marker.exists()\n"
-        "    marker.touch() if flip else marker.unlink()\n"
-        "    assert not flip, 'stock service returned stale data'\n")
+        "    # Simulates a race with an external stock service: fails about half the time.\n"
+        "    assert random.SystemRandom().random() < 0.5, 'stock service returned stale data'\n")
     _git(repo, "add", "-A")
     _git(repo, "commit", "-qm", "Add stock sync check")
-    return {"message": "flaky", "script": []}
+    return {"message": "flaky", "script": [], "reruns": 6}
 
 
 def scenario_infra(repo: Path) -> dict:
@@ -166,6 +163,8 @@ def scenario_infra(repo: Path) -> dict:
            "2026-10-28T11:02:03.1000000Z ##[error]Process completed with exit code 1.\n")
     return {"message": "infra", "script": [], "log": log}
 
+
+RERUNS = {"flaky": 6}   # a 50/50 flaky test looks the same 6 times in a row only ~3% of the time
 
 SCENARIOS = {"rename": scenario_rename, "discount": scenario_discount, "flaky": scenario_flaky, "infra": scenario_infra}
 
@@ -191,6 +190,10 @@ def create_incident(name: str, root: Path) -> tuple[str, list | object]:
     ws = Path(config.settings.workspace_dir) / inc.id
     ws.mkdir(parents=True, exist_ok=True)
     log = info.get("log") or simulate_ci_log(repo, broken, root)
+    for _ in range(10):        # a flaky test may pass by luck; CI only calls GreenLight when it failed
+        if "exit code" in log:
+            break
+        log = simulate_ci_log(repo, broken, root)
     (ws / "ci_log.txt").write_text(log)
     add_event(inc.id, "state", f"Received a failed CI run on main ({broken[:8]}) [offline demo: {name}]",
               {"state": "received"})
@@ -201,13 +204,16 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="GreenLight offline demo")
     parser.add_argument("--only", choices=sorted(SCENARIOS), action="append")
     parser.add_argument("--enqueue", action="store_true", help="queue for a running server instead of processing now")
+    parser.add_argument("--sandbox", choices=["local", "docker"], default="local",
+                        help="local = fast, no isolation (demo repos only); docker = the real isolated sandbox")
     args = parser.parse_args(argv)
 
-    config.settings.sandbox_backend = "local-noinstall"
+    config.settings.sandbox_backend = "docker" if args.sandbox == "docker" else "local-noinstall"
     init_db()
     root = Path(config.settings.workspace_dir).resolve() / "_demo_sources"
     root.mkdir(parents=True, exist_ok=True)
     real_llm = get_llm()
+    default_reruns = config.settings.flaky_reruns
 
     for name in args.only or ["rename", "discount", "flaky", "infra"]:
         incident_id, script = create_incident(name, root)
@@ -216,9 +222,11 @@ def main(argv: list[str] | None = None) -> None:
             print(f"queued {name}: {incident_id}")
             continue
         llm = real_llm or ScriptedProvider(script, model="offline-replay")
+        config.settings.flaky_reruns = RERUNS.get(name, default_reruns)
         if real_llm is None:
             add_event(incident_id, "warning", "No AI model configured: using an offline scripted replay of the agent.")
-        services = Services(code_host=LocalCodeHost(), sandbox=LocalSandbox(install_deps=False), llm=llm)
+        sandbox = DockerSandbox() if args.sandbox == "docker" else LocalSandbox(install_deps=False)
+        services = Services(code_host=LocalCodeHost(), sandbox=sandbox, llm=llm)
         process_incident(incident_id, services)
         with session_scope() as s:
             inc = s.get(Incident, incident_id)

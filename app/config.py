@@ -57,6 +57,8 @@ class Settings:
     sandbox_timeout_seconds: int = field(default_factory=lambda: _get_int("SANDBOX_TIMEOUT_SECONDS", 300))
     sandbox_memory: str = field(default_factory=lambda: _get("SANDBOX_MEMORY", "1g"))
     sandbox_cpus: str = field(default_factory=lambda: _get("SANDBOX_CPUS", "1.0"))
+    # Skip the dependency-install step (for images that already contain the project's dependencies).
+    sandbox_skip_install: bool = field(default_factory=lambda: _get("SANDBOX_SKIP_INSTALL", "0") == "1")
 
     # Budgets that always stop the agent.
     max_agent_steps: int = field(default_factory=lambda: _get_int("MAX_AGENT_STEPS", 15))

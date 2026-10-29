@@ -65,7 +65,8 @@ def handle_workflow_run(payload: dict) -> WebhookDecision:
         existing = s.exec(select(Incident).where(Incident.run_id == run_id)).first()
         if existing:
             return WebhookDecision("duplicate", "incident already exists", existing.id)
-        inc = Incident(repository_id=repo.id, run_id=run_id, branch=branch, failing_sha=run.get("head_sha", ""))
+        inc = Incident(repository_id=repo.id, run_id=run_id, branch=branch, failing_sha=run.get("head_sha", ""),
+                       workflow_id=run.get("workflow_id"))
         s.add(inc)
 
     add_event(inc.id, "state", f"Received a failed run of '{run.get('name', 'CI')}' on {branch} "

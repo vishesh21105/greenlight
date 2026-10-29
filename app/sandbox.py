@@ -140,16 +140,25 @@ class DockerSandbox(Sandbox):
             return f"python:{py_version}-slim"
         return image
 
-    def _base(self, name: str, network: str) -> list[str]:
-        s = config.settings
+    NOBODY = 65534
+
+    def _ids(self) -> tuple[int, int]:
+        """The user the untrusted code runs as: never root, even if GreenLight itself runs as root."""
         uid = os.getuid() if hasattr(os, "getuid") else 1000
         gid = os.getgid() if hasattr(os, "getgid") else 1000
+        if uid == 0:
+            return self.NOBODY, self.NOBODY
+        return uid, gid
+
+    def _base(self, name: str, network: str) -> list[str]:
+        s = config.settings
+        uid, gid = self._ids()
         return [
             "docker", "run", "--rm", "--name", name, "--label", LABEL,
             "--network", network,
             "--cpus", s.sandbox_cpus, "--memory", s.sandbox_memory, "--pids-limit", "256",
             "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
-            "--user", f"{uid}:{gid}", "-e", "HOME=/tmp", "--tmpfs", "/tmp:rw,size=256m",
+            "--user", f"{uid}:{gid}", "-e", "HOME=/tmp", "--tmpfs", "/tmp:rw,size=256m,mode=1777",
         ]
 
     def _run(self, args: list[str], name: str) -> SandboxResult:
@@ -165,6 +174,11 @@ class DockerSandbox(Sandbox):
 
     def install(self, repo_dir, deps_dir, policy, py_version):
         deps_dir.mkdir(parents=True, exist_ok=True)
+        if config.settings.sandbox_skip_install:
+            return SandboxResult(0, "dependency install skipped (SANDBOX_SKIP_INSTALL=1)", 0)
+        uid, gid = self._ids()
+        if uid == self.NOBODY and hasattr(os, "chown"):
+            os.chown(deps_dir, uid, gid)          # the unprivileged sandbox user must be able to install here
         name = f"greenlight-install-{uuid.uuid4().hex[:10]}"
         args = self._base(name, "bridge") + [
             "-v", f"{repo_dir.resolve()}:/workspace/repo:ro",

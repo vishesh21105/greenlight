@@ -6,10 +6,26 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - run: git config --global user.email ci@example.com && git config --global user.name CI
-      - run: python -m pytest -q
+      - name: Unit, pipeline and real Docker sandbox tests
+        run: python -m pytest -q -rs --junitxml=results.xml
+      - name: Report failures as annotations
+        if: always()
+        run: |
+          python - <<'EOF'
+          import xml.etree.ElementTree as ET, os
+          if os.path.exists("results.xml"):
+              root = ET.parse("results.xml").getroot()
+              suite = root if root.tag == "testsuite" else root.find("testsuite")
+              print(f"::notice title=Test totals::tests={suite.get('tests')} failures={suite.get('failures')} "
+                    f"errors={suite.get('errors')} skipped={suite.get('skipped')}")
+              for case in root.iter("testcase"):
+                  for bad in list(case.findall("failure")) + list(case.findall("error")):
+                      msg = (bad.get("message") or "")[:900].replace("\n", "%0A")
+                      print(f"::error title={case.get('classname')}.{case.get('name')}::{msg}")
+          EOF

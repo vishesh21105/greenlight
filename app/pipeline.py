@@ -33,6 +33,10 @@ class Services:
     sandbox: Sandbox
     llm: Optional[LLMProvider]
     dashboard_base_url: str = "http://localhost:8000"
+    incident_link: Optional[str] = None      # fixed link for every incident (e.g. the GitHub Actions run page)
+
+    def link_for(self, incident_id: str) -> str:
+        return self.incident_link or f"{self.dashboard_base_url}/incidents/{incident_id}"
 
 
 # --------------------------------------------------------------------------- recording helpers
@@ -132,7 +136,7 @@ def _process(incident_id: str, svc: Services) -> None:
     inc = get_incident(incident_id)
     with session_scope() as sess:
         repo = sess.get(Repository, inc.repository_id)
-    dash = f"{svc.dashboard_base_url}/incidents/{inc.id}"
+    dash = svc.link_for(inc.id)
     ws = Path(s.workspace_dir) / inc.id
     ws.mkdir(parents=True, exist_ok=True)
     repo_dir, deps_dir = ws / "repo", ws / "deps"
@@ -262,9 +266,16 @@ def _process(incident_id: str, svc: Services) -> None:
                         db_row = sess.get(Patch, row.id)
                         db_row.pr_url = url
                         sess.add(db_row)
+                    if "/compare/" in url:
+                        where = (f"The verified fix is on branch `{branch}`. This repository does not let GitHub "
+                                 f"Actions open pull requests, so open it with one click: {url}")
+                        event_msg = f"Pushed the verified fix to {branch}; PR needs one click: {url}"
+                    else:
+                        where = f"Draft pull request: {url}"
+                        event_msg = f"Opened a verified draft PR: {url}"
                     svc.code_host.comment(repo, inc, diagnosis_comment(
-                        "found the cause and opened a verified fix", f"{p.rationale}\n\nDraft pull request: {url}", "", dash))
-                    set_state(inc.id, S.fixed, f"Opened a verified draft PR: {url}", pr_url=url, summary=p.rationale)
+                        "found the cause and pushed a verified fix", f"{p.rationale}\n\n{where}", "", dash))
+                    set_state(inc.id, S.fixed, event_msg, pr_url=url, summary=p.rationale)
                 else:
                     svc.code_host.comment(repo, inc, diagnosis_comment(
                         "verified fix (comment-only mode)", f"{body}\n\n```diff\n{p.diff}\n```", "", dash))

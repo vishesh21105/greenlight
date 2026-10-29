@@ -77,17 +77,28 @@ class LocalCodeHost:
 
 
 class GitHubCodeHost:
-    """The real GitHub App. Needs GITHUB_APP_ID and GITHUB_PRIVATE_KEY_PATH."""
+    """The real GitHub.
 
-    def __init__(self) -> None:
+    Two ways to log in:
+    - GitHub App (server mode): GITHUB_APP_ID + GITHUB_PRIVATE_KEY_PATH; a short-lived token per repository.
+    - A ready token (GitHub Actions mode): the GITHUB_TOKEN that Actions gives every workflow run.
+    """
+
+    def __init__(self, token: Optional[str] = None) -> None:
+        self._static_token = token
+        self._integration = None
+        if token:
+            return
         from github import Auth, GithubIntegration
         s = config.settings
         if not (s.github_app_id and s.github_private_key_path):
-            raise RuntimeError("GITHUB_APP_ID and GITHUB_PRIVATE_KEY_PATH must be set")
+            raise RuntimeError("Set GITHUB_APP_ID and GITHUB_PRIVATE_KEY_PATH, or pass a token")
         key = Path(s.github_private_key_path).read_text()
         self._integration = GithubIntegration(auth=Auth.AppAuth(int(s.github_app_id), key))
 
     def _token(self, repo: Repository) -> str:
+        if self._static_token:
+            return self._static_token
         return self._integration.get_access_token(repo.github_installation_id).token
 
     def _gh_repo(self, repo: Repository):
@@ -98,7 +109,7 @@ class GitHubCodeHost:
         return f"https://x-access-token:{self._token(repo)}@github.com/{repo.full_name}.git"
 
     def checkout(self, repo, incident, dest):
-        run_git(["clone", "-q", "--filter=blob:none", self._authed_url(repo), str(dest)], timeout=300)
+        run_git(["clone", "-q", self._authed_url(repo), str(dest)], timeout=600)
         # Remove the token from the saved remote so it never sits on disk.
         run_git(["remote", "set-url", "origin", f"https://github.com/{repo.full_name}.git"], dest)
         run_git(["checkout", "-q", incident.failing_sha], dest)
@@ -109,9 +120,10 @@ class GitHubCodeHost:
         headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
         base = f"https://api.github.com/repos/{repo.full_name}/actions/runs/{incident.run_id}"
         with httpx.Client(headers=headers, timeout=60, follow_redirects=True) as client:
-            jobs = client.get(f"{base}/jobs", params={"per_page": 50}).json().get("jobs", [])
+            resp = client.get(f"{base}/jobs", params={"per_page": 50})
+            resp.raise_for_status()
             parts = []
-            for job in jobs:
+            for job in resp.json().get("jobs", []):
                 if job.get("conclusion") != "failure":
                     continue
                 r = client.get(f"https://api.github.com/repos/{repo.full_name}/actions/jobs/{job['id']}/logs")
@@ -123,22 +135,42 @@ class GitHubCodeHost:
                     with zipfile.ZipFile(io.BytesIO(r.content)) as zf:
                         for name in zf.namelist():
                             parts.append(zf.read(name).decode(errors="replace"))
+        if not parts:
+            raise RuntimeError("could not download the failing run's logs (does the token have actions: read?)")
         return "\n".join(parts)
 
     def last_green_sha(self, repo, incident):
+        """The newest commit on the same branch where the SAME workflow passed."""
         gh = self._gh_repo(repo)
-        runs = gh.get_workflow_runs(branch=incident.branch, status="success")
-        for run in runs[:20]:
-            if run.head_sha != incident.failing_sha:
-                return run.head_sha
+        if incident.workflow_id:
+            runs = gh.get_workflow(incident.workflow_id).get_runs(branch=incident.branch, status="success")
+        else:
+            runs = gh.get_workflow_runs(branch=incident.branch, status="success")
+        for run in runs[:30]:
+            if run.head_sha == incident.failing_sha:
+                continue
+            try:
+                # Only a commit that comes before the failing one is a fair comparison.
+                if gh.compare(run.head_sha, incident.failing_sha).status in ("ahead", "identical"):
+                    return run.head_sha
+            except Exception:
+                continue
         return None
 
     def open_pull_request(self, repo, incident, patched_dir, branch, title, body):
+        from github import GithubException
         _commit_patch(patched_dir, branch, title)
-        run_git(["push", "-q", self._authed_url(repo), f"{branch}:refs/heads/{branch}"], patched_dir, timeout=120)
-        pr = self._gh_repo(repo).create_pull(title=title, body=body, head=branch,
-                                             base=incident.branch or repo.default_branch, draft=True)
-        return pr.html_url
+        run_git(["push", "-q", self._authed_url(repo), f"{branch}:refs/heads/{branch}"], patched_dir, timeout=180)
+        base = incident.branch or repo.default_branch
+        try:
+            pr = self._gh_repo(repo).create_pull(title=title, body=body, head=branch, base=base, draft=True)
+            return pr.html_url
+        except GithubException as exc:
+            # Some repositories do not let GitHub Actions open pull requests (a repository setting).
+            # The verified fix branch is pushed anyway; give the human a one-click link to open the PR.
+            if exc.status in (403, 422):
+                return f"https://github.com/{repo.full_name}/compare/{base}...{branch}?expand=1"
+            raise
 
     def comment(self, repo, incident, body):
         commit = self._gh_repo(repo).get_commit(incident.failing_sha)

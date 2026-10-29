@@ -1,0 +1,63 @@
+name: GreenLight CI Doctor
+description: When CI fails, reproduce the failure in a sandbox, find the cause with AI, and open a verified fix PR.
+author: GreenLight
+branding:
+  icon: activity
+  color: green
+
+inputs:
+  github-token:
+    description: Token used to read logs, push the fix branch and open the PR.
+    default: ${{ github.token }}
+  llm-api-key:
+    description: API key for the AI model. Without it GreenLight still diagnoses, but does not fix.
+    default: ""
+  llm-base-url:
+    description: OpenAI-compatible endpoint. Default is Google Gemini.
+    default: https://generativelanguage.googleapis.com/v1beta/openai/
+  llm-model:
+    default: gemini-3.5-flash
+  llm-fallback-models:
+    description: Comma-separated models to use when the main one is out of quota.
+    default: gemini-flash-latest,gemini-2.5-flash
+  llm-min-interval-seconds:
+    description: Seconds between AI calls (free tiers allow only a few per minute).
+    default: "7"
+  llm-reasoning-effort:
+    default: low
+  python-version:
+    description: Python used to run GreenLight itself (the project's own version is read from its workflow).
+    default: "3.12"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v6
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Install GreenLight
+      shell: bash
+      run: python -m pip install --quiet -r "$GITHUB_ACTION_PATH/requirements.txt"
+    - name: Run GreenLight
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        LLM_API_KEY: ${{ inputs.llm-api-key }}
+        LLM_BASE_URL: ${{ inputs.llm-base-url }}
+        LLM_MODEL: ${{ inputs.llm-model }}
+        LLM_FALLBACK_MODELS: ${{ inputs.llm-fallback-models }}
+        LLM_MIN_INTERVAL_SECONDS: ${{ inputs.llm-min-interval-seconds }}
+        LLM_REASONING_EFFORT: ${{ inputs.llm-reasoning-effort }}
+        SANDBOX_BACKEND: docker
+      run: |
+        git config --global user.name "GreenLight"
+        git config --global user.email "greenlight@users.noreply.github.com"
+        python -m app.action
+    - name: Save the incident report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: greenlight-report
+        path: ${{ runner.temp }}/greenlight/report.html
+        if-no-files-found: ignore

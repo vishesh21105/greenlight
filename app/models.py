@@ -67,6 +67,7 @@ class Incident(SQLModel, table=True):
     id: str = Field(default_factory=new_id, primary_key=True)
     repository_id: str = Field(foreign_key="repository.id", index=True)
     run_id: Optional[int] = Field(default=None, index=True)   # GitHub workflow run id
+    workflow_id: Optional[int] = None                           # which workflow failed (to find its last green run)
     branch: str = ""
     failing_sha: str = ""
     last_green_sha: Optional[str] = None
