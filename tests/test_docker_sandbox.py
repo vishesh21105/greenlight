@@ -64,6 +64,15 @@ def deps(tmp_path: Path) -> Path:
     return d
 
 
+def ready_deps(sandbox, repo: Path, tmp_path: Path) -> Path:
+    """Install the project's dependencies (pytest) into the sandbox's deps folder, unless offline."""
+    d = deps(tmp_path)
+    if not os.environ.get("GREENLIGHT_DOCKER_OFFLINE"):
+        res = sandbox.install(repo, d, load_policy(DEMO), "3.12")
+        assert res.passed, res.output
+    return d
+
+
 def test_runs_tests_and_sees_a_real_failure(sandbox, shop, tmp_path):
     policy = load_policy(shop)
     if not os.environ.get("GREENLIGHT_DOCKER_OFFLINE"):
@@ -116,16 +125,17 @@ def test_not_root():
 def test_no_docker_socket():
     assert not os.path.exists("/var/run/docker.sock")
 ''')
-    res = sandbox.run_tests(shop, deps(tmp_path), Policy(), "3.12", ["tests/test_escape.py"])
+    res = sandbox.run_tests(shop, ready_deps(sandbox, shop, tmp_path), Policy(), "3.12", ["tests/test_escape.py"])
     assert res.passed, res.output
     assert "6 passed" in res.output
     assert "hacked" not in (shop / "tinyshop" / "pricing.py").read_text()
 
 
 def test_runaway_tests_are_stopped(sandbox, shop, tmp_path, monkeypatch):
-    monkeypatch.setattr(config.settings, "sandbox_timeout_seconds", 8)
     (shop / "tests" / "test_hang.py").write_text("import time\n\ndef test_forever():\n    time.sleep(600)\n")
-    res = sandbox.run_tests(shop, deps(tmp_path), Policy(), "3.12", ["tests/test_hang.py"])
+    d = ready_deps(sandbox, shop, tmp_path)
+    monkeypatch.setattr(config.settings, "sandbox_timeout_seconds", 8)
+    res = sandbox.run_tests(shop, d, Policy(), "3.12", ["tests/test_hang.py"])
     assert res.timed_out and not res.passed
     leftover = subprocess.run(["docker", "ps", "-q", "--filter", f"label={LABEL}"], capture_output=True, text=True)
     assert leftover.stdout.strip() == ""            # the container was removed
