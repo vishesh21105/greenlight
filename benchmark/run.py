@@ -133,7 +133,10 @@ def run_greenlight(meta: dict, mode: str, llm, work: Path) -> dict:
         runs = s.exec(select(SandboxRun).where(SandboxRun.incident_id == inc.id)).all()
 
     verified = [p for p in patches if p.verified]
+    ai_down = any(("AI model call failed" in e.message or "AI model unavailable" in e.message
+                   or "AI classification unavailable" in e.message) for e in events)
     outcome = {
+        "ai_unavailable": ai_down,
         "state": inc.state, "category": inc.category, "seconds": round(seconds, 1),
         "raw_log_lines": inc.raw_log_lines, "trimmed_log_lines": inc.trimmed_log_lines,
         "llm_calls": len(calls), "input_tokens": sum(c.input_tokens for c in calls),
@@ -245,6 +248,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--set", action="append", dest="sets", choices=["A", "B"])
     parser.add_argument("--category", action="append")
     parser.add_argument("--skip-done", action="store_true", help="skip cases already in the results file")
+    parser.add_argument("--max-calls", type=int, default=0, help="stop before going over this many AI calls (0 = no limit)")
+    parser.add_argument("--per-case-reserve", type=int, default=9, help="calls one case may need, kept in hand")
     args = parser.parse_args(argv)
 
     work = ROOT / ".cache" / "runs" / args.mode
@@ -271,12 +276,26 @@ def main(argv: list[str] | None = None) -> int:
         done = {json.loads(l)["id"] for l in out.read_text().splitlines() if l.strip()}
     cases = [m for m in load_cases(args.only, args.sets) if m["id"] not in done
              and (not args.category or m["category"] in args.category)]
-    print(f"{len(cases)} cases, mode={args.mode}, model={config.settings.llm_model}", flush=True)
+    # A fixed shuffle, so a partial run already covers every project and kind of case.
+    import hashlib
+    cases.sort(key=lambda m: hashlib.sha256(m["id"].encode()).hexdigest())
+    print(f"{len(cases)} cases to run, mode={args.mode}, model={config.settings.llm_model}", flush=True)
+    calls_used = 0
+    ran = 0
     for meta in cases:
+        reserve = 1 if args.mode == "log_only" else args.per_case_reserve
+        if args.max_calls and calls_used + reserve > args.max_calls:
+            print(f"Stopping: AI call budget reached ({calls_used}/{args.max_calls}).", flush=True)
+            break
         if args.mode == "log_only":
             outcome = run_log_only(meta, llm, work)
         else:
             outcome = run_greenlight(meta, args.mode, llm, work)
+        calls_used += outcome.get("llm_calls") or 0
+        if quota_ran_out(outcome, work):
+            print(f"Stopping: the AI quota ran out during {meta['id']}; it will be retried next time.", flush=True)
+            break
+        ran += 1
         verdict = judge(meta, outcome)
         row = {"id": meta["id"], "set": meta["set"], "repo": meta["repo"], "category": meta["category"],
                "expected": meta["expected"], "mode": args.mode, **outcome, "verdict": verdict,
@@ -286,7 +305,16 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{'PASS' if verdict['success'] else 'fail'}  {meta['id']:42s} {outcome['state']:16s} "
               f"{'WRONG-FIX ' if verdict['wrong_fix'] else ''}{outcome.get('seconds', 0)}s calls={outcome.get('llm_calls')}",
               flush=True)
+    print(f"::notice title=Benchmark {args.mode}::ran {ran} case(s), {calls_used} AI calls, "
+          f"{len(done) + ran} of {len(done) + len(cases)} done", flush=True)
     return 0
+
+
+def quota_ran_out(outcome: dict, work: Path) -> bool:
+    """True if the AI provider refused calls, so this result says nothing about GreenLight."""
+    if outcome.get("state") == "error" and "RateLimit" in str(outcome.get("error", "")):
+        return True
+    return bool(outcome.get("ai_unavailable"))
 
 
 if __name__ == "__main__":

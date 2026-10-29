@@ -37,7 +37,11 @@ from app.sandbox import DockerSandbox, SandboxResult  # noqa: E402
 from benchmark.cases import CASES, REPOS          # noqa: E402
 
 HIDDEN_NAME = "test_greenlight_hidden.py"
-BENCH_DEPS = ["text-unidecode==1.3", "freezegun==1.5.5", "wcwidth==0.2.13"]
+# Everything the projects' test suites need, unpacked as pure-Python wheels and mounted read-only into
+# the sandbox (the official python:*-slim images do not include pytest).
+BENCH_DEPS = ["pytest==8.4.2", "pluggy==1.6.0", "iniconfig==2.1.0", "packaging==25.0", "pygments==2.19.2",
+              "text-unidecode==1.3", "freezegun==1.5.5", "wcwidth==0.2.13", "python-dateutil==2.9.0.post0",
+              "six==1.17.0"]
 
 
 def git(repo: Path, *args: str, check: bool = True) -> str:
@@ -56,7 +60,7 @@ def deps_dir() -> Path:
     if not marker.exists():
         shutil.rmtree(d, ignore_errors=True)
         subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "--no-compile", "--only-binary=:all:",
-                        "--no-deps", "--target", str(d), *BENCH_DEPS, "python-dateutil==2.9.0.post0", "six==1.17.0"],
+                        "--no-deps", "--target", str(d), *BENCH_DEPS],
                        check=True)
         marker.write_text("ok")
     return d

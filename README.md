@@ -13,6 +13,11 @@ GreenLight watches a project's CI pipeline (GitHub Actions). When a build turns 
 
 A human approves every change. GreenLight never merges anything.
 
+**See it working:** [GreenLight's pull request on tinyshop](https://github.com/vishesh21105/tinyshop/pull/1), opened
+by itself after a broken commit: the cause in plain English, the two-line fix, and the sandbox's proof that the
+failing tests and the full suite pass. **Benchmark:** [benchmark/results/REPORT.md](benchmark/results/REPORT.md),
+44 cases from four real open-source projects plus the demo, updated daily.
+
 ---
 
 ## Try it in two minutes (no GitHub, no AI key)
@@ -32,7 +37,7 @@ The demo builds real git repositories with real broken commits and runs the full
 | --- | --- | --- |
 | `rename` | A function was renamed but one caller was missed | Verified fix pushed to a `greenlight/fix-...` branch |
 | `discount` | A business rule changed and a test disagrees | Honest diagnosis, no patch (a human must decide) |
-| `flaky` | A test fails on alternate runs | Labelled flaky after 3 sandbox runs, no patch |
+| `flaky` | A test fails at random, like a race condition | Labelled flaky after repeated sandbox runs, no patch |
 | `infra` | The CI runner ran out of disk | Recognised from the log alone, re-run suggested |
 
 Without an AI key the demo uses a **scripted replay** of the agent (clearly marked on the timeline).
@@ -49,18 +54,33 @@ export LLM_REASONING_EFFORT=low
 python -m app.demo
 ```
 
-> The demo uses the `local-noinstall` sandbox, which runs tests on your machine with **no isolation**.
-> It is only for these demo repositories. Real repositories always use the Docker sandbox.
+> By default the demo uses the `local` sandbox, which runs tests on your machine with **no isolation**; it is
+> only for these demo repositories. With Docker running, `python -m app.demo --sandbox docker` uses the real
+> isolated sandbox. Real repositories always use the Docker sandbox.
 
 ## Use it on a real GitHub repository
 
-See **[docs/setup-github-app.md](docs/setup-github-app.md)**. In short: create a GitHub App, install it on a
-repository, put its ID, key and webhook secret in `.env`, make sure Docker is running, then:
+**Easiest: GitHub Actions mode** ([docs/github-actions-mode.md](docs/github-actions-mode.md)). Add one workflow
+file and one secret to the repository; GreenLight runs on GitHub's own machines when CI fails, with Docker for
+the sandbox. No server needed. This is how [tinyshop](https://github.com/vishesh21105/tinyshop) is set up.
 
-```bash
-set -a; source .env; set +a
-uvicorn app.main:app --port 8000
+```yaml
+# .github/workflows/greenlight.yml (shortened; full file in the doc)
+on:
+  workflow_run: {workflows: ["CI"], types: [completed]}
+permissions: {contents: write, pull-requests: write, actions: read}
+jobs:
+  greenlight:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vishesh21105/greenlight@main
+        with: {llm-api-key: "${{ secrets.LLM_API_KEY }}"}
 ```
+
+**Server mode, with the live dashboard** ([docs/setup-github-app.md](docs/setup-github-app.md)): create a
+GitHub App, install it on repositories, put its ID, key and webhook secret in `.env`, make sure Docker is
+running, then `uvicorn app.main:app --port 8000`.
 
 ## How it is built
 
@@ -83,11 +103,14 @@ app/
   policy.py          the .greenlight.yml house rules
   scrub.py           hides secrets before anything is sent or stored
   llm.py             one adapter for any OpenAI-compatible model
-  github_client.py   GitHub App access, plus a local stand-in for the demo
+  github_client.py   GitHub access (App or Actions token), plus a local stand-in for the demo
+  action.py          GitHub Actions mode entry point (used by action.yml)
   metrics.py         numbers for the metrics page
   demo.py            the offline demo
+action.yml           the reusable GitHub Action
+benchmark/           44 cases, runner, baselines, ablations, daily job and report
 demo/tinyshop/       the small shop library used as the demo repository
-tests/               73 tests covering every safety rule and the full loop
+tests/               80+ tests: every safety rule, the full loop, and real Docker sandbox tests
 ```
 
 ## Safety in one paragraph
@@ -98,15 +121,12 @@ process and time limits. Patches are checked against the repository's `.greenlig
 *green* commit, so a bad commit cannot loosen its own rules): no workflow files, no secret files, no deleting
 or skipping tests, size limits. A fix is only offered after the sandbox has seen the tests pass.
 
-## Status and next steps
+## Status
 
-Built so far (plan phases 0 to 6, core): webhook, log trimming, classification, sandbox reproduction with flaky
-detection, agent with tools and budgets, patch safety checks, verification with repair attempts, draft PRs and
-comments, dashboard and metrics, 73 tests. Tested end to end with a real model (Gemini 3.5 Flash) on all four
-demo scenarios.
+Working end to end on GitHub: a broken commit on [tinyshop](https://github.com/vishesh21105/tinyshop) led to a
+verified draft pull request with no human in the loop. The Docker sandbox is tested for real on GitHub's
+runners (network off, no secrets, read-only code, unprivileged user, time and memory limits). The benchmark
+runs daily within the free AI quota; see [benchmark/README.md](benchmark/README.md).
 
-Next:
-1. **Connect a real GitHub App and a real model** and run the `tinyshop` demo repository end to end.
-2. **Benchmark** (plan phase 7): build the seeded and real failure sets in `benchmark/`, then measure fix rate,
-   wrong-fix rate, time and cost against the baselines.
-3. **Polish for the showcase**: deploy on one small VM, rehearse the live demo, record a backup video.
+Known limits: Python projects on GitHub Actions only; dependency-upgrade failures are diagnosed but not part of
+the benchmark; the free AI tier allows only a few fixes a day.

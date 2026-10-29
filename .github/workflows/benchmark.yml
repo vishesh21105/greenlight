@@ -1,0 +1,64 @@
+name: Benchmark
+# Runs one batch a day, just after the free Gemini quota resets (07:00 UTC), and commits the results.
+# A push to the `run-benchmark` branch starts an extra batch.
+on:
+  schedule:
+    - cron: "41 7 * * *"
+  push:
+    branches: [run-benchmark]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: benchmark
+  cancel-in-progress: false
+
+jobs:
+  batch:
+    runs-on: ubuntu-latest
+    env:
+      SANDBOX_IMAGE: python:3.12-slim
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Build and validate the cases (inside the Docker sandbox)
+        run: |
+          python -m benchmark.build || true
+          python -m benchmark.mine_history --max-per-repo 4 || true
+          python - <<'EOF'
+          import json, glob
+          metas = [json.load(open(p)) for p in glob.glob("benchmark/.cache/cases/*.json")]
+          ok = [m for m in metas if m.get("valid")]
+          print(f"::notice title=Benchmark cases::{len(ok)} valid of {len(metas)} built")
+          EOF
+      - name: Run today's batch
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: https://generativelanguage.googleapis.com/v1beta/openai/
+          LLM_MODEL: gemini-3.5-flash
+          LLM_FALLBACK_MODELS: gemini-flash-latest,gemini-2.5-flash
+          LLM_MIN_INTERVAL_SECONDS: "7"
+          LLM_REASONING_EFFORT: low
+        run: python -m benchmark.daily --budget 45
+      - name: Save the results to the repository
+        run: |
+          git config user.name "GreenLight benchmark"
+          git config user.email "greenlight-benchmark@users.noreply.github.com"
+          git add benchmark/results
+          if git diff --cached --quiet; then echo "nothing new"; exit 0; fi
+          git commit -m "Benchmark: daily batch $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; sleep 5; done
+          python - <<'EOF'
+          import pathlib
+          text = pathlib.Path("benchmark/results/REPORT.md").read_text() if pathlib.Path("benchmark/results/REPORT.md").exists() else ""
+          lines = [l for l in text.splitlines() if l.startswith("| Fix rate") or l.startswith("| Cases run") or l.startswith("| Wrong-fix")]
+          print("::notice title=Benchmark so far::" + " %0A".join(lines))
+          EOF
