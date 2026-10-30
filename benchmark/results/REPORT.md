@@ -1,30 +1,31 @@
 # GreenLight benchmark results
 
-Cases: 4 (4 seeded, 0 real historical bugs) across 4 projects. Model(s) used: gemini-2.5-flash, gemini-3.5-flash, gemini-flash-latest.
+Cases: 7 (6 seeded, 1 real historical bugs) across 4 projects. Model(s) used: gemini-3.5-flash, gemini-2.5-flash, gemini-flash-latest.
 
 ## Headline numbers
 
 | Metric | GreenLight | Baseline: ask the AI once (no tools, no sandbox) |
 | --- | --- | --- |
-| Cases run | 4 | 3 |
-| Fix rate (verified fix that also passes hidden tests) | 4/4 (100%) | 3/3 (100%) |
-| PR precision (opened fixes that are correct) | 4/4 (100%) | 3/3 (100%) |
-| Wrong-fix rate (opened fixes that are wrong) | 0/4 (0%) | 0/3 (0%) |
+| Cases run | 7 | 5 |
+| Fix rate (verified fix that also passes hidden tests) | 6/7 (86%) | 4/5 (80%) |
+| PR precision (opened fixes that are correct) | 6/6 (100%) | 4/4 (100%) |
+| Wrong-fix rate (opened fixes that are wrong) | 0/6 (0%) | 0/4 (0%) |
 | Flaky / infra handled without a patch | n/a | n/a |
-| Failure kind classified correctly | 3/4 (75%) | n/a |
-| Median time to a correct fix (including waits for the free AI tier) | 262s | 18s |
-| Median GreenLight time to a correct fix (excluding AI wait) | n/a | n/a |
-| AI calls per case | 5.8 | 1.0 |
-| Tokens per correct fix | 26,956 | 6,027 |
-| Share of log sent to the AI | 33.8% | n/a |
+| Failure kind classified correctly | 6/7 (86%) | n/a |
+| Median time to a correct fix (including waits for the free AI tier) | 90s | 13s |
+| Median GreenLight time to a correct fix (excluding AI wait) | 6s | 2s |
+| AI calls per case | 6.6 | 1.0 |
+| Tokens per correct fix | 33,720 | 6,175 |
+| Share of log sent to the AI | 28.5% | n/a |
 | Secret leaks | 0 | 0 |
 
 ## GreenLight by kind of case
 
 | Set | Kind | Cases | Success | Wrong fixes |
 | --- | --- | --- | --- | --- |
-| seeded | broken test | 1 | 1 | 0 |
-| seeded | code bug | 3 | 3 | 0 |
+| seeded | broken test | 2 | 2 | 0 |
+| seeded | code bug | 4 | 4 | 0 |
+| historical | code bug | 1 | 0 | 0 |
 
 ## Every case
 
@@ -32,8 +33,15 @@ Cases: 4 (4 seeded, 0 real historical bugs) across 4 projects. Model(s) used: ge
 | --- | --- | --- | --- | --- | --- | --- |
 | slugify-duplicate-dashes | fix | fixed | pass | 526.4s | 7 | reverts the broken line (reviewer warned) |
 | tabulate-padleft-direction | fix | fixed | pass | 70.4s | 7 | reverts the broken line (reviewer warned) |
+| shop-gst-rate-outdated-tests | fix | fixed | pass | 109.2s | 5 | edits a test (flagged) |
 | shop-missing-import | fix | fixed | pass | 64.0s | 3 |  |
+| toolz-get-in-typeerror | fix | fixed | pass | 40.7s | 5 | reverts the broken line (reviewer warned) |
 | toolz-merge-with-values | fix | fixed | pass | 454.3s | 6 |  |
+| hist-tabulate-5373ebfa | fix | gave_up | FAIL | 936.1s | 13 |  |
+
+## Why the failures happened
+
+- **hist-tabulate-5373ebfa** (gave_up): no explanation recorded
 
 ## Method
 
