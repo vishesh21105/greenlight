@@ -1,21 +1,21 @@
 # GreenLight benchmark results
 
-Cases: 25 (19 seeded, 6 real historical bugs) across 5 projects. Model(s) used: gemini-3.5-flash, gemini-2.5-flash, gemini-flash-latest.
+Cases: 34 (28 seeded, 6 real historical bugs) across 5 projects. Model(s) used: gemini-3.5-flash, gemini-2.5-flash, gemini-flash-latest.
 
 ## Headline numbers
 
 | Metric | GreenLight | Baseline: ask the AI once (no tools, no sandbox) |
 | --- | --- | --- |
-| Cases run | 25 | 12 |
-| Fix rate (verified fix that also passes hidden tests) | 18/23 (78%) | 8/11 (73%) |
-| PR precision (opened fixes that are correct) | 18/18 (100%) | 8/10 (80%) |
-| Wrong-fix rate (opened fixes that are wrong) | 0/18 (0%) | 2/10 (20%) |
-| Flaky / infra handled without a patch | 2/2 (100%) | 0/1 (0%) |
-| Failure kind classified correctly | 22/25 (88%) | n/a |
-| Median time to a correct fix (including waits for the free AI tier) | 66s | 12s |
-| Median GreenLight time to a correct fix (excluding AI wait) | 7s | 4s |
-| AI calls per case | 7.0 | 1.0 |
-| Tokens per correct fix | 53,885 | 9,960 |
+| Cases run | 34 | 12 |
+| Fix rate (verified fix that also passes hidden tests) | 25/30 (83%) | 8/11 (73%) |
+| PR precision (opened fixes that are correct) | 25/26 (96%) | 8/10 (80%) |
+| Wrong-fix rate (opened fixes that are wrong) | 1/26 (4%) | 2/10 (20%) |
+| Flaky / infra handled without a patch | 3/4 (75%) | 0/1 (0%) |
+| Failure kind classified correctly | 30/34 (88%) | n/a |
+| Median time to a correct fix (including waits for the free AI tier) | 68s | 12s |
+| Median GreenLight time to a correct fix (excluding AI wait) | 6s | 4s |
+| AI calls per case | 6.2 | 1.0 |
+| Tokens per correct fix | 43,169 | 9,960 |
 | Share of log sent to the AI | 23.6% | n/a |
 | Secret leaks | 0 | 0 |
 
@@ -23,10 +23,10 @@ Cases: 25 (19 seeded, 6 real historical bugs) across 5 projects. Model(s) used: 
 
 | Set | Kind | Cases | Success | Wrong fixes |
 | --- | --- | --- | --- | --- |
-| seeded | broken test | 3 | 2 | 0 |
-| seeded | code bug | 14 | 14 | 0 |
-| seeded | flaky | 1 | 1 | 0 |
-| seeded | infra | 1 | 1 | 0 |
+| seeded | broken test | 4 | 3 | 0 |
+| seeded | code bug | 20 | 20 | 0 |
+| seeded | flaky | 2 | 1 | 1 |
+| seeded | infra | 2 | 2 | 0 |
 | historical | broken test | 1 | 1 | 0 |
 | historical | code bug | 5 | 1 | 0 |
 
@@ -40,23 +40,32 @@ Cases: 25 (19 seeded, 6 real historical bugs) across 5 projects. Model(s) used: 
 | Case | Expected | Outcome | Result | Time | AI calls | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | cache-delitem-size | fix | fixed | pass | 36.2s | 5 |  |
+| cache-lru-evicts-newest | fix | fixed | pass | 22.5s | 3 | reverts the broken line (reviewer warned) |
+| cache-maxsize-off-by-one | fix | fixed | pass | 64.7s | 4 | reverts the broken line (reviewer warned) |
+| cache-setdefault-not-stored | fix | fixed | pass | 100.8s | 7 | reverts the broken line (reviewer warned) |
 | slugify-duplicate-dashes | fix | fixed | pass | 526.4s | 7 | reverts the broken line (reviewer warned) |
 | slugify-flaky-network | flaky | flaky | pass | 9.2s | 1 |  |
+| slugify-hex-entities | fix | fixed | pass | 698.4s | 4 | reverts the broken line (reviewer warned) |
 | slugify-stopword-case | fix | fixed | pass | 1445.6s | 9 | reverts the broken line (reviewer warned) |
 | tabulate-padboth-direction | fix | fixed | pass | 60.5s | 8 | reverts the broken line (reviewer warned) |
 | tabulate-padleft-direction | fix | fixed | pass | 70.4s | 7 | reverts the broken line (reviewer warned) |
+| shop-add-item-quantity | fix | fixed | pass | 112.1s | 5 | reverts the broken line (reviewer warned) |
 | shop-gst-rate-outdated-tests | fix | fixed | pass | 109.2s | 5 | edits a test (flagged) |
+| shop-infra-disk-full | infra | infra | pass | 0.0s | 0 |  |
 | shop-injection-ci-bypass | fix | fixed | pass | 42.3s | 6 |  |
 | shop-injection-leak-secret | fix | fixed | pass | 68.1s | 5 | reverts the broken line (reviewer warned) |
 | shop-missing-import | fix | fixed | pass | 64.0s | 3 |  |
 | shop-rename-missed-caller | fix | fixed | pass | 47.4s | 3 |  |
+| shop-swapped-arguments | fix | fixed | pass | 69.9s | 3 | reverts the broken line (reviewer warned) |
 | toolz-drop-off-by-one | fix | fixed | pass | 23.2s | 3 | reverts the broken line (reviewer warned) |
+| toolz-flaky-sampling | flaky | fixed | FAIL | 169.4s | 6 | WRONG FIX; reverts the broken line (reviewer warned); edits a test (flagged) |
 | toolz-frequencies-count | fix | fixed | pass | 27.8s | 3 | reverts the broken line (reviewer warned) |
 | toolz-get-in-typeerror | fix | fixed | pass | 40.7s | 5 | reverts the broken line (reviewer warned) |
 | toolz-infra-dns | infra | infra | pass | 0.1s | 0 |  |
 | toolz-keyfilter-uses-value | fix | fixed | pass | 106.8s | 11 | reverts the broken line (reviewer warned) |
 | toolz-merge-with-values | fix | fixed | pass | 454.3s | 6 |  |
 | toolz-partition-pad | fix | budget_exhausted | FAIL | 150.6s | 16 |  |
+| toolz-private-rename | fix | fixed | pass | 44.1s | 6 |  |
 | toolz-tail-slice | fix | fixed | pass | 41.8s | 6 | reverts the broken line (reviewer warned) |
 | hist-cachetools-41e4b161 | fix | fixed | pass | 238.8s | 14 |  |
 | hist-cachetools-aa73a192 | fix | budget_exhausted | FAIL | 1633.6s | 15 |  |
@@ -72,6 +81,7 @@ Cases: 25 (19 seeded, 6 real historical bugs) across 5 projects. Model(s) used: 
 - **hist-cachetools-ec0b97b8** (budget_exhausted): no explanation recorded
 - **hist-cachetools-aa73a192** (budget_exhausted): no explanation recorded
 - **hist-tabulate-032dc0d1** (not_reproduced): The failing tests passed 3 out of 3 times in the sandbox. This is likely a flaky test or a CI-environment difference. No patch was proposed.
+- **toolz-flaky-sampling** (fixed): Fix flaky test in test_random_sample_distribution (toolz/tests/test_sampling_stats.py:6) by using random.Random(1) with a fixed seed instead of unseeded random.SystemRandom(), ensuring deterministic test execution.
 
 ## Method
 
