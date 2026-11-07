@@ -4,20 +4,20 @@ Cases: 44 (35 seeded, 9 real historical bugs) across 5 projects. Model(s) used: 
 
 ## Headline numbers
 
-| Metric | GreenLight | Baseline: ask the AI once (no tools, no sandbox) | Ablation: no reproduction step |
-| --- | --- | --- | --- |
-| Cases run | 44 | 44 | 5 |
-| Fix rate (verified fix that also passes hidden tests) | 30/37 (81%) | 23/37 (62%) | 3/3 (100%) |
-| PR precision (opened fixes that are correct) | 30/32 (94%) | 23/32 (72%) | 3/4 (75%) |
-| Wrong-fix rate (opened fixes that are wrong) | 2/32 (6%) | 9/32 (28%) | 1/4 (25%) |
-| Flaky / infra handled without a patch | 6/7 (86%) | 4/7 (57%) | 0/2 (0%) |
-| Failure kind classified correctly | 37/44 (84%) | n/a | 4/5 (80%) |
-| Median time to a correct fix (including waits for the free AI tier) | 69s | 9s | 37s |
-| Median GreenLight time to a correct fix (excluding AI wait) | 6s | 2s | 2s |
-| AI calls per case | 6.0 | 1.0 | 4.6 |
-| Tokens per correct fix | 44,340 | 12,866 | 14,842 |
-| Share of log sent to the AI | 23.1% | n/a | 13.4% |
-| Secret leaks | 0 | 0 | 0 |
+| Metric | GreenLight | Baseline: ask the AI once (no tools, no sandbox) | Ablation: no reproduction step | Ablation: raw log instead of trimmed log |
+| --- | --- | --- | --- | --- |
+| Cases run | 44 | 44 | 8 | 2 |
+| Fix rate (verified fix that also passes hidden tests) | 30/37 (81%) | 23/37 (62%) | 4/4 (100%) | 1/2 (50%) |
+| PR precision (opened fixes that are correct) | 30/32 (94%) | 23/32 (72%) | 4/7 (57%) | 1/1 (100%) |
+| Wrong-fix rate (opened fixes that are wrong) | 2/32 (6%) | 9/32 (28%) | 3/7 (43%) | 0/1 (0%) |
+| Flaky / infra handled without a patch | 6/7 (86%) | 4/7 (57%) | 0/4 (0%) | n/a |
+| Failure kind classified correctly | 37/44 (84%) | n/a | 7/8 (88%) | 1/2 (50%) |
+| Median time to a correct fix (including waits for the free AI tier) | 69s | 9s | 31s | 33s |
+| Median GreenLight time to a correct fix (excluding AI wait) | 6s | 2s | 2s | 3s |
+| AI calls per case | 6.0 | 1.0 | 6.4 | 9.5 |
+| Tokens per correct fix | 44,340 | 12,866 | 30,862 | 147,285 |
+| Share of log sent to the AI | 23.1% | n/a | 15.9% | 38.1% |
+| Secret leaks | 0 | 0 | 0 | 0 |
 
 ## GreenLight by kind of case
 
