@@ -6,17 +6,17 @@ Cases: 44 (35 seeded, 9 real historical bugs) across 5 projects. Model(s) used: 
 
 | Metric | GreenLight | Baseline: ask the AI once (no tools, no sandbox) | Ablation: no reproduction step | Ablation: raw log instead of trimmed log |
 | --- | --- | --- | --- | --- |
-| Cases run | 44 | 44 | 8 | 7 |
-| Fix rate (verified fix that also passes hidden tests) | 30/37 (81%) | 23/37 (62%) | 4/4 (100%) | 4/7 (57%) |
-| PR precision (opened fixes that are correct) | 30/32 (94%) | 23/32 (72%) | 4/7 (57%) | 4/4 (100%) |
-| Wrong-fix rate (opened fixes that are wrong) | 2/32 (6%) | 9/32 (28%) | 3/7 (43%) | 0/4 (0%) |
+| Cases run | 44 | 44 | 8 | 8 |
+| Fix rate (verified fix that also passes hidden tests) | 30/37 (81%) | 23/37 (62%) | 4/4 (100%) | 5/8 (62%) |
+| PR precision (opened fixes that are correct) | 30/32 (94%) | 23/32 (72%) | 4/7 (57%) | 5/5 (100%) |
+| Wrong-fix rate (opened fixes that are wrong) | 2/32 (6%) | 9/32 (28%) | 3/7 (43%) | 0/5 (0%) |
 | Flaky / infra handled without a patch | 6/7 (86%) | 4/7 (57%) | 0/4 (0%) | n/a |
-| Failure kind classified correctly | 37/44 (84%) | n/a | 7/8 (88%) | 6/7 (86%) |
-| Median time to a correct fix (including waits for the free AI tier) | 69s | 9s | 31s | 59s |
-| Median GreenLight time to a correct fix (excluding AI wait) | 6s | 2s | 2s | 6s |
-| AI calls per case | 6.0 | 1.0 | 6.4 | 7.7 |
-| Tokens per correct fix | 44,340 | 12,866 | 30,862 | 84,198 |
-| Share of log sent to the AI | 23.1% | n/a | 15.9% | 27.1% |
+| Failure kind classified correctly | 37/44 (84%) | n/a | 7/8 (88%) | 7/8 (88%) |
+| Median time to a correct fix (including waits for the free AI tier) | 69s | 9s | 31s | 33s |
+| Median GreenLight time to a correct fix (excluding AI wait) | 6s | 2s | 2s | 5s |
+| AI calls per case | 6.0 | 1.0 | 6.4 | 7.2 |
+| Tokens per correct fix | 44,340 | 12,866 | 30,862 | 69,640 |
+| Share of log sent to the AI | 23.1% | n/a | 15.9% | 28.3% |
 | Secret leaks | 0 | 0 | 0 | 0 |
 
 ## GreenLight by kind of case
